@@ -1,17 +1,37 @@
-# Zalo Bot for Home Assistant
+# Zalo Bot Server
 
-Custom integration Home Assistant kết nối tới **Zalo Server** để gửi tin nhắn, ảnh, file, video, sticker, quản lý tài khoản/nhóm/bạn bè và sử dụng các action Zalo trong automation.
+Zalo Bot Server là server Node.js trung gian cho phép đăng nhập và điều khiển tài khoản Zalo thông qua `zca-js`, cung cấp Web UI, REST API, WebSocket, webhook và backend cho integration **Zalo Bot for Home Assistant**.
 
-> Bản này đã được rà soát để tương thích và tối ưu cho **Zalo Server v1.0.6**.
+> Phiên bản tài liệu này dành cho **Zalo Bot Server v1.0.6**.
+
+## Tính năng chính
+
+- Đăng nhập nhiều tài khoản Zalo bằng QR và lưu credential bền vững.
+- Tự reconnect khi listener bị ngắt với retry/backoff, không xóa cookie chỉ vì timeout mạng.
+- Giữ IMEI, User-Agent và proxy của từng tài khoản khi reconnect.
+- Gửi tin nhắn, ảnh, nhiều ảnh, file, voice, video, sticker, card và link.
+- Thu hồi/xóa/chuyển tiếp tin nhắn, reaction và typing event.
+- Quản lý bạn bè, lời mời kết bạn, alias, block/unblock và trạng thái online.
+- Quản lý nhóm, thành viên, phó nhóm, chủ nhóm, link nhóm, avatar/tên nhóm, note, poll và reminder.
+- Quản lý Auto Delete của cuộc trò chuyện với các mức Zalo hỗ trợ: `off`, `1d`, `7d`, `14d`.
+- Lưu cache lịch sử nhóm bền vững từ các message listener quan sát được.
+- Quản lý quick message, label, unread, mute, pin, archive và hidden conversation.
+- Webhook riêng cho message, group event và reaction; hỗ trợ cấu hình mặc định hoặc theo từng tài khoản.
+- Quản lý proxy và gán proxy ổn định cho tài khoản.
+- Web UI quản trị, API docs và WebSocket realtime.
+- Session quản trị và dữ liệu runtime được lưu trong data volume để tồn tại qua restart/recreate container.
+- Health endpoint và Docker healthcheck.
 
 ## Yêu cầu
 
-- Home Assistant 2024.3.0 trở lên.
-- HACS nếu muốn cài đặt/cập nhật tự động.
-- Zalo Server v1.0.6 trở lên đang chạy và Home Assistant truy cập được.
-- Nếu gửi file/ảnh local theo cơ chế shared volume, dùng cùng cấu trúc volume với Zalo Server.
+- Docker được khuyến nghị cho môi trường production.
+- Nếu chạy trực tiếp: Node.js 22 LTS.
+- Có kết nối mạng tới Zalo.
+- Với Home Assistant integration: Home Assistant phải truy cập được URL của Zalo Server.
 
-Stack Zalo Server khuyến nghị:
+## Chạy bằng Docker Compose / Stack
+
+Ví dụ:
 
 ```yaml
 services:
@@ -20,232 +40,343 @@ services:
     container_name: zalo-server
     restart: unless-stopped
     network_mode: host
+
     environment:
       - TZ=Asia/Ho_Chi_Minh
       - PORT=3000
+
     volumes:
       - /opt/home-assistant/config/zalo-server:/app/data
       - /opt/home-assistant/config/www/zalo-server:/config/www/zalo_bot
 ```
 
-Có thể đổi `PORT=3000` sang port khác, ví dụ `PORT=3100`.
+Có thể đổi port bằng biến môi trường, ví dụ:
 
-## Cài đặt qua HACS
+```yaml
+- PORT=3100
+```
 
-### Thêm custom repository
+Vì Stack trên dùng `network_mode: host`, không cần khai báo `ports:`.
 
-1. Mở HACS trong Home Assistant.
-2. Chọn menu ba chấm ở góc trên bên phải.
-3. Chọn **Custom repositories**.
-4. Repository:
-   `https://github.com/khaisilk1910/zalo-bot-hacs`
-5. Type: **Integration**.
-6. Chọn **Add**.
-7. Mở repository **Zalo Bot** trong HACS và chọn **Download**.
-8. Khởi động lại Home Assistant.
+## Truy cập
 
-Sau khi restart:
-
-1. Vào **Settings → Devices & services**.
-2. Chọn **Add Integration**.
-3. Tìm **Zalo Bot**.
-4. Nhập:
-   - Zalo Server URL, ví dụ `http://192.168.1.10:3000` hoặc `http://192.168.1.10:3100`.
-   - Username/password quản trị của Zalo Server.
-   - Tùy chọn thông báo kết quả.
-5. Config flow sẽ kiểm tra kết nối và thông tin đăng nhập trước khi lưu.
-
-## Cài đặt thủ công
-
-Sao chép:
+Nếu chạy port `3000`:
 
 ```text
-custom_components/zalo_bot
+http://IP_SERVER:3000
 ```
 
-vào:
+Nếu đổi thành `3100`:
 
 ```text
-/config/custom_components/zalo_bot
+http://IP_SERVER:3100
 ```
 
-sau đó restart Home Assistant và thêm integration từ **Settings → Devices & services**.
+Các đường dẫn chính:
 
-## Tương thích với Zalo Server v1.0.6
+- `/` — trang quản trị.
+- `/admin-login` — đăng nhập quản trị.
+- `/zalo-login` — đăng nhập tài khoản Zalo bằng QR.
+- `/accounts` — danh sách tài khoản Zalo đang quản lý.
+- `/messages` — giao diện message.
+- `/proxies` — quản lý proxy.
+- `/account-webhook-manager` — webhook theo tài khoản.
+- `/user-management` — quản lý user server.
+- `/list` — tài liệu API.
+- `/ws` — WebSocket realtime, yêu cầu session đã xác thực.
+- `/api/health` — health check nhẹ, không yêu cầu đăng nhập.
 
-Các thay đổi quan trọng trong bản integration này:
+## Đăng nhập quản trị lần đầu
 
-- `create_note_group` dùng endpoint `/api/createNoteByAccount`.
-- `edit_note_group` dùng endpoint `/api/editNoteByAccount`.
-- `get_quick_message` dùng `/api/getQuickMessageListByAccount`.
-- `undo_message` dùng `/api/undoByAccount` và yêu cầu cả `msg_id` + `cli_msg_id`.
-- Proxy API dùng `/proxies` thay vì `/api/proxies`.
-- Khôi phục `get_received_friend_requests` qua `/api/getReceivedFriendRequestsByAccount`.
-- Khôi phục `get_group_chat_history` qua `/api/getGroupChatHistoryByAccount`. Vì Zalo đã gỡ API history gốc, Cơ chế được giới thiệu từ Zalo Server v1.0.4 và tiếp tục có trong v1.0.6: server lưu lịch sử nhóm cục bộ trong `/app/data/history/groups` từ các message listener quan sát được.
-- Thư mục file dùng chung trên Home Assistant đổi thành:
-  `/config/www/zalo-server`
-- Các action gửi tin nhắn/file/ảnh **không tự gửi `ttl=0`** nữa. Nếu không chọn TTL, integration không thay đổi Auto Delete của cuộc trò chuyện.
-- TTL hỗ trợ theo Zalo Server v1.0.6:
-  - `off`
-  - `1d`
-  - `7d`
-  - `14d`
-- Gửi video không còn gửi TTL per-message vì cơ chế đó không đáng tin cậy; nếu cần hãy dùng action `zalo_bot.update_auto_delete_chat`.
-- `get_group_chat_history` trả tối đa 200 tin gần nhất từ cache bền vững của server. Lịch sử bắt đầu được thu thập từ khi chạy Zalo Server v1.0.4 trở lên; không thể tải ngược các tin cũ trước thời điểm đó vì endpoint history phía Zalo hiện đã bị gỡ.
+Nếu chưa có dữ liệu user, server sẽ tạo tài khoản mặc định:
 
-### Lưu ý về Auto Delete
-
-`ttl` trên Zalo Server v1.0.6 là cài đặt **Auto Delete của cuộc trò chuyện**, không phải bộ đếm tự hủy riêng cho một message.
-
-Ví dụ:
-
-```yaml
-action: zalo_bot.send_message
-data:
-  account_selection: "+84123456789"
-  thread_id: "123456789"
-  type: "1"
-  message: "Tin nhắn nhóm"
-  ttl: "1d"
+```text
+Username: admin
+Password: admin
 ```
 
-Nếu không muốn thay đổi Auto Delete, bỏ hẳn trường `ttl`.
+**Hãy đổi mật khẩu ngay sau lần đăng nhập đầu tiên.** Mật khẩu mới phải có ít nhất 8 ký tự.
 
-Để tắt Auto Delete:
+Server lưu user tại data directory và sử dụng PBKDF2-SHA512 cho password hash mới. Password hash cũ sẽ được nâng cấp khi người dùng đăng nhập thành công.
 
-```yaml
-action: zalo_bot.update_auto_delete_chat
-data:
-  account_selection: "+84123456789"
-  thread_id: "123456789"
-  type: "1"
-  ttl: "off"
+## Biến môi trường
+
+Các biến thông dụng:
+
+| Biến | Mặc định | Mô tả |
+|---|---:|---|
+| `PORT` | `3000` | Port HTTP/WebSocket của server. |
+| `TZ` | hệ thống | Múi giờ, khuyến nghị `Asia/Ho_Chi_Minh`. |
+| `DATA_DIRECTORY` | tùy môi trường | Thư mục dữ liệu runtime; Docker entrypoint dùng `/app/data`. |
+| `PUBLIC_DIR` | `/config/www/zalo_bot` | Thư mục file public dùng khi gửi media local. |
+| `SESSION_SECRET` | tự tạo | Secret session. Nếu bỏ trống, server tự tạo và lưu bền vững trong data directory. |
+| `SESSION_COOKIE_SECURE` | `false` | Đặt `true` khi dùng HTTPS đúng cách. |
+| `TRUST_PROXY` | `false` | Bật khi server đứng sau reverse proxy đáng tin cậy. |
+| `MESSAGE_WEBHOOK_URL` | rỗng | Webhook message mặc định. |
+| `GROUP_EVENT_WEBHOOK_URL` | rỗng | Webhook group event mặc định. |
+| `REACTION_WEBHOOK_URL` | rỗng | Webhook reaction mặc định. |
+| `DEBUG_HTTP` | `false` | Log HTTP chi tiết khi debug. |
+| `DEBUG_STARTUP` | `false` | Log startup chi tiết khi debug. |
+| `ENABLE_DEBUG_ENDPOINTS` | `false` | Bật endpoint debug quản trị. Không nên bật thường xuyên. |
+| `ENABLE_ADMIN_PASSWORD_RESET` | `false` | Bật endpoint reset password quản trị có kiểm soát. |
+
+File mẫu nằm tại:
+
+```text
+config/.env.example
 ```
 
-## Ví dụ gửi tin nhắn
+## Dữ liệu bền vững
 
-Gửi cho user:
+Với Docker stack ở trên, `/app/data` được lưu trên host tại:
 
-```yaml
-action: zalo_bot.send_message
-data:
-  account_selection: "+84123456789"
-  thread_id: "5841349563795164131"
-  type: "0"
-  message: "Xin chào từ Home Assistant"
+```text
+/opt/home-assistant/config/zalo-server
 ```
 
-Gửi vào group:
+Các dữ liệu quan trọng gồm:
 
-```yaml
-action: zalo_bot.send_message
-data:
-  account_selection: "+84123456789"
-  thread_id: "5841349563795164131"
-  type: "1"
-  message: "Thông báo từ Home Assistant"
+```text
+/app/data/
+├── cookies/                 # credential Zalo + users.json
+├── history/groups/          # cache lịch sử nhóm
+├── sessions/                # session quản trị
+├── proxies.json             # danh sách proxy
+├── webhook-config.json      # webhook mặc định/theo account
+└── session-secret           # secret session nếu tự sinh
 ```
 
-## Thu hồi tin nhắn
+Không đưa các file runtime này lên GitHub public.
 
-Zalo Server yêu cầu cả `msgId` và `cliMsgId`:
+## Đăng nhập Zalo và reconnect
 
-```yaml
-action: zalo_bot.undo_message
-data:
-  account_selection: "+84123456789"
-  thread_id: "5841349563795164131"
-  type: "1"
-  msg_id: "123456"
-  cli_msg_id: "987654"
+Sau khi quét QR, credential được lưu dưới data directory. Khi listener bị đóng:
+
+1. Server giữ nguyên cookie/credential.
+2. Chờ theo backoff: khoảng `5s → 15s → 30s → 60s → 120s → 300s`.
+3. Thử login lại bằng cookie, IMEI, User-Agent và proxy đã lưu.
+4. Reconnect tự động **không bật QR fallback**.
+5. Chỉ khi session Zalo thực sự bị vô hiệu hóa mới cần quét QR lại.
+
+Để giảm nguy cơ session bị đá, tránh mở cùng account trên Zalo Web trong khi bot listener đang chạy nếu không cần thiết.
+
+## Gửi nhiều ảnh
+
+Từ v1.0.5+, mỗi ảnh được tải vào một file tạm riêng bằng UUID. Điều này tránh lỗi trước đây khiến ảnh cuối cùng trong danh sách bị gửi lặp lại nhiều lần.
+
+Server giữ đúng thứ tự attachment và dọn file tạm sau khi hoàn tất request.
+
+## Auto Delete / TTL
+
+Zalo hiện không thực thi ổn định TTL riêng trên từng `sendMessage()`. Vì vậy server ánh xạ tùy chọn TTL sang **Auto Delete của cả cuộc trò chuyện**.
+
+Các giá trị được hỗ trợ:
+
+```text
+off / 0
+1d  / 86400000
+7d  / 604800000
+14d / 1209600000
 ```
 
-## Gửi ảnh/file local
+Nếu request không có `ttl`, server không thay đổi cài đặt Auto Delete hiện tại của cuộc trò chuyện.
 
-Integration sử dụng:
+## Lịch sử nhóm
+
+API lịch sử nhóm gốc phía Zalo không còn hoạt động ổn định, nên server lưu message nhóm mà listener nhìn thấy vào:
+
+```text
+/app/data/history/groups/<account_id>/<group_id>.jsonl
+```
+
+Endpoint:
+
+```text
+POST /api/getGroupChatHistoryByAccount
+```
+
+đọc từ cache này.
+
+Lưu ý:
+
+- Cache chỉ có dữ liệu từ thời điểm server bắt đầu ghi history.
+- Không thể tự tải ngược toàn bộ message cũ trước thời điểm đó.
+- Cache được giữ qua restart/recreate container nếu `/app/data` được persist.
+- Server tự deduplicate và giới hạn/compact history để tránh file tăng không giới hạn.
+
+## Webhook
+
+Server hỗ trợ ba loại webhook:
+
+- Message.
+- Group event.
+- Reaction.
+
+Có thể cấu hình URL mặc định bằng environment hoặc cấu hình riêng theo từng account trong Web UI/API.
+
+Các API quản lý webhook theo account:
+
+```text
+GET    /api/account-webhooks
+GET    /api/account-webhook/:ownId
+POST   /api/account-webhook
+DELETE /api/account-webhook/:ownId
+```
+
+Webhook request có timeout để tránh request treo làm ảnh hưởng listener.
+
+## Proxy
+
+Có thể quản lý proxy từ Web UI hoặc API. Proxy được lưu trong:
+
+```text
+/app/data/proxies.json
+```
+
+Khi account đã đăng nhập bằng một proxy, server cố gắng giữ cùng proxy cho các lần restart/reconnect sau thay vì tự đổi IP không cần thiết.
+
+## API
+
+REST API được mount dưới:
+
+```text
+/api
+```
+
+`/api/health` và `/api/login` là các endpoint phục vụ health/auth; các API thao tác còn lại sử dụng session đã xác thực.
+
+### Các nhóm API chính
+
+- **Account:** danh sách account, chi tiết account, avatar, profile, settings, last online.
+- **Message/media:** text, image, multiple images, file, voice, video, sticker, card, link, typing, reaction, undo/delete/forward.
+- **Friends/users:** tìm user, thông tin user, lời mời kết bạn, friends, alias, block/unblock.
+- **Groups:** tạo nhóm, thành viên, deputy/owner, link nhóm, avatar/name, leave/join/disperse.
+- **Conversation:** unread, mute, pin, archive, hidden conversation, Auto Delete.
+- **Notes/polls/reminders:** note nhóm, board, poll, reminder.
+- **Quick Message/Labels:** tạo, sửa, xóa, đọc quick message và labels.
+- **Webhook/Proxy:** cấu hình webhook và proxy.
+
+Ví dụ đăng nhập API:
+
+```bash
+curl -c cookies.txt \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"YOUR_PASSWORD"}' \
+  http://127.0.0.1:3000/api/login
+```
+
+Sau đó gọi API cần session:
+
+```bash
+curl -b cookies.txt http://127.0.0.1:3000/api/accounts
+```
+
+Health check:
+
+```bash
+curl http://127.0.0.1:3000/api/health
+```
+
+## Home Assistant
+
+Repo Home Assistant/HACS tương ứng:
+
+```text
+https://github.com/khaisilk1910/zalo-bot-hacs
+```
+
+Khuyến nghị sử dụng HACS integration cùng thế hệ release tương thích với server v1.0.6.
+
+Đối với media local, Home Assistant integration ghi file tạm/public ở:
 
 ```text
 /config/www/zalo-server
 ```
 
-và stack Zalo Server cần mount cùng thư mục host:
+và Zalo Server đọc cùng dữ liệu host thông qua đường dẫn container:
 
-```yaml
-- /opt/home-assistant/config/www/zalo-server:/config/www/zalo_bot
+```text
+/config/www/zalo_bot
 ```
 
-Đường dẫn bên trong container Zalo Server vẫn là `/config/www/zalo_bot` vì source server hiện sử dụng đường dẫn này.
+## Healthcheck
 
-## Cấu trúc repository
+Docker image có healthcheck mặc định tới:
+
+```text
+/api/health
+```
+
+Có thể kiểm tra trạng thái container bằng:
+
+```bash
+docker inspect --format='{{.State.Health.Status}}' zalo-server
+```
+
+## Build từ source
+
+```bash
+npm ci
+npm start
+```
+
+`npm start` chạy:
+
+```text
+node server.js
+```
+
+## Cấu trúc source
 
 ```text
 .
-├── .github/
-│   └── workflows/
-│       ├── hacs.yaml
-│       └── hassfest.yaml
-├── custom_components/
-│   └── zalo_bot/
-│       ├── brand/
-│       │   └── icon.png
-│       ├── translations/
-│       │   ├── en.json
-│       │   └── vi.json
-│       ├── __init__.py
-│       ├── config_flow.py
-│       ├── manifest.json
-│       ├── services.yaml
-│       └── ...
-├── hacs.json
-├── CHANGELOG.md
-└── README.md
+├── api/zalo/               # wrapper/API Zalo
+├── config/                 # cấu hình runtime
+├── routes/                 # HTTP UI + REST API
+├── services/               # auth, session, proxy, webhook, websocket
+├── utils/                  # helpers, history, atomic write, auto-delete
+├── views/                  # EJS Web UI
+├── app.js                  # Express app
+├── server.js               # HTTP/WebSocket server
+├── eventListeners.js       # listener/reconnect/event dispatch
+├── Dockerfile
+├── entrypoint.sh
+├── package.json
+└── CHANGELOG.md
 ```
 
-## Release
+## Update release
 
-Integration sử dụng CalVer. Release đầu tiên của fork này:
+Sau khi cập nhật source:
+
+```bash
+git pull --rebase origin main
+git add .
+git commit -m "Update Zalo Bot Server"
+git push origin main
+```
+
+Tạo release mới, ví dụ:
+
+```bash
+git tag -a v1.0.7 -m "Zalo Bot Server v1.0.7"
+git push origin v1.0.7
+```
+
+Nếu GitHub Actions được cấu hình publish GHCR theo tag, image mới sẽ có dạng:
 
 ```text
-v2026.8.17.3
+ghcr.io/khaisilk1910/zalo-bot-server:v1.0.7
 ```
 
-Mỗi lần phát hành, cập nhật `version` trong `custom_components/zalo_bot/manifest.json`, tạo tag và **GitHub Release** tương ứng.
+## Bảo mật
 
-## Kiểm tra CI
+- Đổi `admin/admin` ngay sau lần đăng nhập đầu tiên.
+- Không commit `/app/data`, cookies, `users.json`, webhook URL hoặc session data lên Git.
+- Không bật `ENABLE_DEBUG_ENDPOINTS` hoặc `ENABLE_ADMIN_PASSWORD_RESET` khi không cần.
+- Nếu expose ra Internet, đặt server sau HTTPS reverse proxy, giới hạn firewall/IP và cấu hình `TRUST_PROXY`/secure cookie phù hợp.
+- Đây là dự án sử dụng API Zalo không chính thức; hành vi có thể thay đổi khi Zalo cập nhật hệ thống.
 
-Repository có sẵn:
+## License / trách nhiệm sử dụng
 
-- HACS validation.
-- Home Assistant Hassfest validation.
-
-Sau khi push lên GitHub, kiểm tra tab **Actions** và chỉ publish release khi hai workflow đều xanh.
-
-## Nguồn và trách nhiệm sử dụng
-
-Integration giao tiếp với Zalo Server và các API Zalo không chính thức. Hãy sử dụng tài khoản và hệ thống của bạn theo các điều khoản áp dụng và tự kiểm tra các thay đổi API khi nâng phiên bản server.
-
-## Hai action được khôi phục trong v2026.8.17.1
-
-### `zalo_bot.get_received_friend_requests`
-
-```yaml
-action: zalo_bot.get_received_friend_requests
-data:
-  account_selection: "+84123456789"
-response_variable: received_friend_requests
-```
-
-Kết quả trả về chỉ gồm các mục lời mời kết bạn đã nhận đang chờ xử lý.
-
-### `zalo_bot.get_group_chat_history`
-
-```yaml
-action: zalo_bot.get_group_chat_history
-data:
-  account_selection: "+84123456789"
-  group_id: "123456789"
-  count: 50
-response_variable: group_history
-```
-
-Zalo hiện không còn cung cấp endpoint history nhóm mà `zca-js` từng sử dụng. Vì vậy từ Zalo Server v1.0.4 (bao gồm v1.0.6), server lưu các message nhóm mà listener quan sát được vào volume `/app/data/history/groups` và action này đọc từ cache bền vững đó. Cache tồn tại qua restart container, nhưng không thể khôi phục các tin nhắn cũ trước thời điểm bạn cài v1.0.4.
+Dự án không phải sản phẩm chính thức của Zalo. Người dùng chịu trách nhiệm sử dụng tài khoản, API, proxy và dữ liệu theo các điều khoản áp dụng.
