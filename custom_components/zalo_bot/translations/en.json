@@ -1,0 +1,1682 @@
+{
+  "title": "Zalo Bot",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Zalo Server",
+        "description": "Enter the Zalo Server address and administrator credentials. Custom ports are supported, for example http://192.168.1.10:3100.",
+        "data": {
+          "zalo_server": "Zalo Server URL",
+          "username": "Username",
+          "password": "Password",
+          "enable_notifications": "Enable result notifications"
+        },
+        "data_description": {
+          "zalo_server": "Full URL including http/https and a custom port when needed.",
+          "username": "Zalo Server administrator username.",
+          "password": "Zalo Server administrator password.",
+          "enable_notifications": "Show persistent notifications for service results."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to Zalo Server.",
+      "invalid_auth": "Invalid username or password."
+    },
+    "abort": {
+      "already_configured": "Zalo Bot is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Zalo Bot options",
+        "description": "Update the Zalo Server address or login credentials.",
+        "data": {
+          "zalo_server": "Zalo Server URL",
+          "username": "Username",
+          "password": "Password",
+          "enable_notifications": "Enable result notifications"
+        },
+        "data_description": {
+          "zalo_server": "Full URL including http/https and a custom port when needed.",
+          "username": "Zalo Server administrator username.",
+          "password": "Zalo Server administrator password.",
+          "enable_notifications": "Show persistent notifications for service results."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to Zalo Server.",
+      "invalid_auth": "Invalid username or password."
+    }
+  },
+  "services": {
+    "send_message": {
+      "name": "Send Message",
+      "description": "Run the Zalo Bot action “Send Message” through Zalo Server.",
+      "fields": {
+        "message": {
+          "name": "Message",
+          "description": "Value for message."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        },
+        "ttl": {
+          "name": "Auto-delete duration",
+          "description": "Value for auto-delete duration."
+        },
+        "quote": {
+          "name": "Quote",
+          "description": "Value for quote."
+        }
+      }
+    },
+    "send_file": {
+      "name": "Send File",
+      "description": "Run the Zalo Bot action “Send File” through Zalo Server.",
+      "fields": {
+        "file_path_or_url": {
+          "name": "File Path Or Url",
+          "description": "Value for file path or url."
+        },
+        "message": {
+          "name": "Message",
+          "description": "Value for message."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        },
+        "ttl": {
+          "name": "Auto-delete duration",
+          "description": "Value for auto-delete duration."
+        }
+      }
+    },
+    "send_image": {
+      "name": "Send Image",
+      "description": "Run the Zalo Bot action “Send Image” through Zalo Server.",
+      "fields": {
+        "image_path": {
+          "name": "Image Path",
+          "description": "Value for image path."
+        },
+        "message": {
+          "name": "Message",
+          "description": "Value for message."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        },
+        "ttl": {
+          "name": "Auto-delete duration",
+          "description": "Value for auto-delete duration."
+        }
+      }
+    },
+    "get_logged_accounts": {
+      "name": "Get Logged Accounts",
+      "description": "Run the Zalo Bot action “Get Logged Accounts” through Zalo Server.",
+      "fields": {}
+    },
+    "get_account_details": {
+      "name": "Get Account Details",
+      "description": "Run the Zalo Bot action “Get Account Details” through Zalo Server.",
+      "fields": {
+        "own_id": {
+          "name": "Own ID",
+          "description": "Value for own id."
+        }
+      }
+    },
+    "find_user": {
+      "name": "Find User",
+      "description": "Run the Zalo Bot action “Find User” through Zalo Server.",
+      "fields": {
+        "phone": {
+          "name": "Phone",
+          "description": "Value for phone."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_user_info": {
+      "name": "Get User Info",
+      "description": "Run the Zalo Bot action “Get User Info” through Zalo Server.",
+      "fields": {
+        "user_id": {
+          "name": "User Id",
+          "description": "Value for user id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "send_friend_request": {
+      "name": "Send Friend Request",
+      "description": "Run the Zalo Bot action “Send Friend Request” through Zalo Server.",
+      "fields": {
+        "user_id": {
+          "name": "User Id",
+          "description": "Value for user id."
+        },
+        "message": {
+          "name": "Message",
+          "description": "Value for message."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "create_group": {
+      "name": "Create Group",
+      "description": "Run the Zalo Bot action “Create Group” through Zalo Server.",
+      "fields": {
+        "members": {
+          "name": "Members",
+          "description": "Value for members."
+        },
+        "name": {
+          "name": "Name",
+          "description": "Value for name."
+        },
+        "avatar_path": {
+          "name": "Avatar Path",
+          "description": "Value for avatar path."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_group_info": {
+      "name": "Get Group Info",
+      "description": "Run the Zalo Bot action “Get Group Info” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "add_user_to_group": {
+      "name": "Add User To Group",
+      "description": "Run the Zalo Bot action “Add User To Group” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "member_id": {
+          "name": "Member Id",
+          "description": "Value for member id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "remove_user_from_group": {
+      "name": "Remove User From Group",
+      "description": "Run the Zalo Bot action “Remove User From Group” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "member_id": {
+          "name": "Member Id",
+          "description": "Value for member id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "send_image_to_user": {
+      "name": "Send Image To User",
+      "description": "Run the Zalo Bot action “Send Image To User” through Zalo Server.",
+      "fields": {
+        "image_path": {
+          "name": "Image Path",
+          "description": "Value for image path."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "ttl": {
+          "name": "Auto-delete duration",
+          "description": "Value for auto-delete duration."
+        }
+      }
+    },
+    "send_images_to_user": {
+      "name": "Send Images To User",
+      "description": "Run the Zalo Bot action “Send Images To User” through Zalo Server.",
+      "fields": {
+        "image_paths": {
+          "name": "Image Paths",
+          "description": "Value for image paths."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "ttl": {
+          "name": "Auto-delete duration",
+          "description": "Value for auto-delete duration."
+        }
+      }
+    },
+    "send_image_to_group": {
+      "name": "Send Image To Group",
+      "description": "Run the Zalo Bot action “Send Image To Group” through Zalo Server.",
+      "fields": {
+        "image_path": {
+          "name": "Image Path",
+          "description": "Value for image path."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "ttl": {
+          "name": "Auto-delete duration",
+          "description": "Value for auto-delete duration."
+        }
+      }
+    },
+    "send_images_to_group": {
+      "name": "Send Images To Group",
+      "description": "Run the Zalo Bot action “Send Images To Group” through Zalo Server.",
+      "fields": {
+        "image_paths": {
+          "name": "Image Paths",
+          "description": "Value for image paths."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "ttl": {
+          "name": "Auto-delete duration",
+          "description": "Value for auto-delete duration."
+        }
+      }
+    },
+    "get_account_webhooks": {
+      "name": "Get Account Webhooks",
+      "description": "Run the Zalo Bot action “Get Account Webhooks” through Zalo Server.",
+      "fields": {}
+    },
+    "get_account_webhook": {
+      "name": "Get Account Webhook",
+      "description": "Run the Zalo Bot action “Get Account Webhook” through Zalo Server.",
+      "fields": {
+        "own_id": {
+          "name": "Own ID",
+          "description": "Value for own id."
+        }
+      }
+    },
+    "set_account_webhook": {
+      "name": "Set Account Webhook",
+      "description": "Run the Zalo Bot action “Set Account Webhook” through Zalo Server.",
+      "fields": {
+        "own_id": {
+          "name": "Own ID",
+          "description": "Value for own id."
+        },
+        "message_webhook_url": {
+          "name": "Message Webhook Url",
+          "description": "Value for message webhook url."
+        },
+        "group_event_webhook_url": {
+          "name": "Group Event Webhook Url",
+          "description": "Value for group event webhook url."
+        },
+        "reaction_webhook_url": {
+          "name": "Reaction Webhook Url",
+          "description": "Value for reaction webhook url."
+        }
+      }
+    },
+    "delete_account_webhook": {
+      "name": "Delete Account Webhook",
+      "description": "Run the Zalo Bot action “Delete Account Webhook” through Zalo Server.",
+      "fields": {
+        "own_id": {
+          "name": "Own ID",
+          "description": "Value for own id."
+        }
+      }
+    },
+    "get_proxies": {
+      "name": "Get Proxies",
+      "description": "Run the Zalo Bot action “Get Proxies” through Zalo Server.",
+      "fields": {}
+    },
+    "add_proxy": {
+      "name": "Add Proxy",
+      "description": "Run the Zalo Bot action “Add Proxy” through Zalo Server.",
+      "fields": {
+        "proxy_url": {
+          "name": "Proxy Url",
+          "description": "Value for proxy url."
+        }
+      }
+    },
+    "remove_proxy": {
+      "name": "Remove Proxy",
+      "description": "Run the Zalo Bot action “Remove Proxy” through Zalo Server.",
+      "fields": {
+        "proxy_url": {
+          "name": "Proxy Url",
+          "description": "Value for proxy url."
+        }
+      }
+    },
+    "accept_friend_request": {
+      "name": "Accept Friend Request",
+      "description": "Run the Zalo Bot action “Accept Friend Request” through Zalo Server.",
+      "fields": {
+        "user_id": {
+          "name": "User Id",
+          "description": "Value for user id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "block_user": {
+      "name": "Block User",
+      "description": "Run the Zalo Bot action “Block User” through Zalo Server.",
+      "fields": {
+        "user_id": {
+          "name": "User Id",
+          "description": "Value for user id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "unblock_user": {
+      "name": "Unblock User",
+      "description": "Run the Zalo Bot action “Unblock User” through Zalo Server.",
+      "fields": {
+        "user_id": {
+          "name": "User Id",
+          "description": "Value for user id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "send_sticker": {
+      "name": "Send Sticker",
+      "description": "Run the Zalo Bot action “Send Sticker” through Zalo Server.",
+      "fields": {
+        "sticker_id": {
+          "name": "Sticker Id",
+          "description": "Value for sticker id."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        }
+      }
+    },
+    "undo_message": {
+      "name": "Undo Message",
+      "description": "Run the Zalo Bot action “Undo Message” through Zalo Server.",
+      "fields": {
+        "msg_id": {
+          "name": "Message ID",
+          "description": "Value for message id."
+        },
+        "cli_msg_id": {
+          "name": "Client message ID",
+          "description": "Value for client message id."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        }
+      }
+    },
+    "create_reminder": {
+      "name": "Create Reminder",
+      "description": "Run the Zalo Bot action “Create Reminder” through Zalo Server.",
+      "fields": {
+        "title": {
+          "name": "Title",
+          "description": "Value for title."
+        },
+        "content": {
+          "name": "Content",
+          "description": "Value for content."
+        },
+        "remind_time": {
+          "name": "Remind Time",
+          "description": "Value for remind time."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        }
+      }
+    },
+    "remove_reminder": {
+      "name": "Remove Reminder",
+      "description": "Run the Zalo Bot action “Remove Reminder” through Zalo Server.",
+      "fields": {
+        "reminder_id": {
+          "name": "Reminder Id",
+          "description": "Value for reminder id."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        }
+      }
+    },
+    "change_group_name": {
+      "name": "Change Group Name",
+      "description": "Run the Zalo Bot action “Change Group Name” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "name": {
+          "name": "Name",
+          "description": "Value for name."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "change_group_avatar": {
+      "name": "Change Group Avatar",
+      "description": "Run the Zalo Bot action “Change Group Avatar” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "image_path": {
+          "name": "Image Path",
+          "description": "Value for image path."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "send_voice": {
+      "name": "Send Voice",
+      "description": "Run the Zalo Bot action “Send Voice” through Zalo Server.",
+      "fields": {
+        "voice_path": {
+          "name": "Voice Path",
+          "description": "Value for voice path."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        }
+      }
+    },
+    "get_all_friends": {
+      "name": "Get All Friends",
+      "description": "Run the Zalo Bot action “Get All Friends” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_received_friend_requests": {
+      "name": "Get Received Friend Requests",
+      "description": "Get pending friend requests received by the selected Zalo account.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Phone number or account ID."
+        }
+      }
+    },
+    "get_sent_friend_requests": {
+      "name": "Get Sent Friend Requests",
+      "description": "Run the Zalo Bot action “Get Sent Friend Requests” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "undo_friend_request": {
+      "name": "Undo Friend Request",
+      "description": "Run the Zalo Bot action “Undo Friend Request” through Zalo Server.",
+      "fields": {
+        "friend_id": {
+          "name": "Friend Id",
+          "description": "Value for friend id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "remove_friend": {
+      "name": "Remove Friend",
+      "description": "Run the Zalo Bot action “Remove Friend” through Zalo Server.",
+      "fields": {
+        "friend_id": {
+          "name": "Friend Id",
+          "description": "Value for friend id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "change_friend_alias": {
+      "name": "Change Friend Alias",
+      "description": "Run the Zalo Bot action “Change Friend Alias” through Zalo Server.",
+      "fields": {
+        "friend_id": {
+          "name": "Friend Id",
+          "description": "Value for friend id."
+        },
+        "alias": {
+          "name": "Alias",
+          "description": "Value for alias."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "remove_friend_alias": {
+      "name": "Remove Friend Alias",
+      "description": "Run the Zalo Bot action “Remove Friend Alias” through Zalo Server.",
+      "fields": {
+        "friend_id": {
+          "name": "Friend Id",
+          "description": "Value for friend id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_all_groups": {
+      "name": "Get All Groups",
+      "description": "Run the Zalo Bot action “Get All Groups” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_group_chat_history": {
+      "name": "Get Group Chat History",
+      "description": "Get the most recent group messages persisted locally by Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID of the group."
+        },
+        "count": {
+          "name": "Count",
+          "description": "Number of recent messages to return (1-200)."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Phone number or account ID."
+        }
+      }
+    },
+    "add_group_deputy": {
+      "name": "Add Group Deputy",
+      "description": "Run the Zalo Bot action “Add Group Deputy” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "member_id": {
+          "name": "Member Id",
+          "description": "Value for member id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "remove_group_deputy": {
+      "name": "Remove Group Deputy",
+      "description": "Run the Zalo Bot action “Remove Group Deputy” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "member_id": {
+          "name": "Member Id",
+          "description": "Value for member id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "change_group_owner": {
+      "name": "Change Group Owner",
+      "description": "Run the Zalo Bot action “Change Group Owner” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "member_id": {
+          "name": "Member Id",
+          "description": "Value for member id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "disperse_group": {
+      "name": "Disperse Group",
+      "description": "Run the Zalo Bot action “Disperse Group” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "enable_group_link": {
+      "name": "Enable Group Link",
+      "description": "Run the Zalo Bot action “Enable Group Link” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "disable_group_link": {
+      "name": "Disable Group Link",
+      "description": "Run the Zalo Bot action “Disable Group Link” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "join_group": {
+      "name": "Join Group",
+      "description": "Run the Zalo Bot action “Join Group” through Zalo Server.",
+      "fields": {
+        "link": {
+          "name": "Link",
+          "description": "Value for link."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "leave_group": {
+      "name": "Leave Group",
+      "description": "Run the Zalo Bot action “Leave Group” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "silent": {
+          "name": "Silent",
+          "description": "Value for silent."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "update_profile": {
+      "name": "Update Profile",
+      "description": "Run the Zalo Bot action “Update Profile” through Zalo Server.",
+      "fields": {
+        "name": {
+          "name": "Name",
+          "description": "Value for name."
+        },
+        "dob": {
+          "name": "Dob",
+          "description": "Value for dob."
+        },
+        "gender": {
+          "name": "Gender",
+          "description": "Value for gender."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "update_settings": {
+      "name": "Update Settings",
+      "description": "Run the Zalo Bot action “Update Settings” through Zalo Server.",
+      "fields": {
+        "setting_type": {
+          "name": "Setting Type",
+          "description": "Value for setting type."
+        },
+        "status": {
+          "name": "Status",
+          "description": "Value for status."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "set_mute": {
+      "name": "Set Mute",
+      "description": "Run the Zalo Bot action “Set Mute” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "duration": {
+          "name": "Duration",
+          "description": "Value for duration."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        }
+      }
+    },
+    "set_pinned_conversation": {
+      "name": "Set Pinned Conversation",
+      "description": "Run the Zalo Bot action “Set Pinned Conversation” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "pinned": {
+          "name": "Pinned",
+          "description": "Value for pinned."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        }
+      }
+    },
+    "get_unread_mark": {
+      "name": "Get Unread Mark",
+      "description": "Run the Zalo Bot action “Get Unread Mark” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "add_unread_mark": {
+      "name": "Add Unread Mark",
+      "description": "Run the Zalo Bot action “Add Unread Mark” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "remove_unread_mark": {
+      "name": "Remove Unread Mark",
+      "description": "Run the Zalo Bot action “Remove Unread Mark” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "delete_chat": {
+      "name": "Delete Chat",
+      "description": "Run the Zalo Bot action “Delete Chat” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_archived_chat_list": {
+      "name": "Get Archived Chat List",
+      "description": "Run the Zalo Bot action “Get Archived Chat List” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_auto_delete_chat": {
+      "name": "Get Auto Delete Chat",
+      "description": "Run the Zalo Bot action “Get Auto Delete Chat” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "update_auto_delete_chat": {
+      "name": "Update Auto Delete Chat",
+      "description": "Run the Zalo Bot action “Update Auto Delete Chat” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "ttl": {
+          "name": "Auto-delete duration",
+          "description": "Value for auto-delete duration."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_hidden_conversations": {
+      "name": "Get Hidden Conversations",
+      "description": "Run the Zalo Bot action “Get Hidden Conversations” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "set_hidden_conversations": {
+      "name": "Set Hidden Conversations",
+      "description": "Run the Zalo Bot action “Set Hidden Conversations” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "hidden": {
+          "name": "Hidden",
+          "description": "Value for hidden."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "update_hidden_convers_pin": {
+      "name": "Update Hidden Convers Pin",
+      "description": "Run the Zalo Bot action “Update Hidden Convers Pin” through Zalo Server.",
+      "fields": {
+        "pin": {
+          "name": "Pin",
+          "description": "Value for pin."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "reset_hidden_convers_pin": {
+      "name": "Reset Hidden Convers Pin",
+      "description": "Run the Zalo Bot action “Reset Hidden Convers Pin” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_mute": {
+      "name": "Get Mute",
+      "description": "Run the Zalo Bot action “Get Mute” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_pin_conversations": {
+      "name": "Get Pin Conversations",
+      "description": "Run the Zalo Bot action “Get Pin Conversations” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "add_reaction": {
+      "name": "Add Reaction",
+      "description": "Run the Zalo Bot action “Add Reaction” through Zalo Server.",
+      "fields": {
+        "icon": {
+          "name": "Icon",
+          "description": "Value for icon."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "msg_id": {
+          "name": "Message ID",
+          "description": "Value for message id."
+        },
+        "cli_msg_id": {
+          "name": "Client message ID",
+          "description": "Value for client message id."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "delete_message": {
+      "name": "Delete Message",
+      "description": "Run the Zalo Bot action “Delete Message” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "msg_id": {
+          "name": "Message ID",
+          "description": "Value for message id."
+        },
+        "cli_msg_id": {
+          "name": "Client message ID",
+          "description": "Value for client message id."
+        },
+        "uid_from": {
+          "name": "Uid From",
+          "description": "Value for uid from."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        },
+        "only_me": {
+          "name": "Only Me",
+          "description": "Value for only me."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "forward_message": {
+      "name": "Forward Message",
+      "description": "Run the Zalo Bot action “Forward Message” through Zalo Server.",
+      "fields": {
+        "message": {
+          "name": "Message",
+          "description": "Value for message."
+        },
+        "thread_ids": {
+          "name": "Thread Ids",
+          "description": "Value for thread ids."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        }
+      }
+    },
+    "parse_link": {
+      "name": "Parse Link",
+      "description": "Run the Zalo Bot action “Parse Link” through Zalo Server.",
+      "fields": {
+        "link": {
+          "name": "Link",
+          "description": "Value for link."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "send_card": {
+      "name": "Send Card",
+      "description": "Run the Zalo Bot action “Send Card” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "user_id": {
+          "name": "User Id",
+          "description": "Value for user id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "send_link": {
+      "name": "Send Link",
+      "description": "Run the Zalo Bot action “Send Link” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "link": {
+          "name": "Link",
+          "description": "Value for link."
+        },
+        "message": {
+          "name": "Message",
+          "description": "Value for message."
+        },
+        "thumbnail": {
+          "name": "Thumbnail",
+          "description": "Value for thumbnail."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_stickers": {
+      "name": "Get Stickers",
+      "description": "Run the Zalo Bot action “Get Stickers” through Zalo Server.",
+      "fields": {
+        "query": {
+          "name": "Query",
+          "description": "Value for query."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_stickers_detail": {
+      "name": "Get Stickers Detail",
+      "description": "Run the Zalo Bot action “Get Stickers Detail” through Zalo Server.",
+      "fields": {
+        "sticker_album": {
+          "name": "Sticker Album",
+          "description": "Value for sticker album."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "send_video": {
+      "name": "Send Video",
+      "description": "Run the Zalo Bot action “Send Video” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "video_path_or_url": {
+          "name": "Video Path Or Url",
+          "description": "Value for video path or url."
+        },
+        "thumbnail_url": {
+          "name": "Thumbnail Url",
+          "description": "Value for thumbnail url."
+        },
+        "message": {
+          "name": "Message",
+          "description": "Value for message."
+        },
+        "width": {
+          "name": "Width",
+          "description": "Value for width."
+        },
+        "height": {
+          "name": "Height",
+          "description": "Value for height."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "create_note_group": {
+      "name": "Create Note Group",
+      "description": "Run the Zalo Bot action “Create Note Group” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "title": {
+          "name": "Title",
+          "description": "Value for title."
+        },
+        "pin_act": {
+          "name": "Pin Act",
+          "description": "Value for pin act."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "edit_note_group": {
+      "name": "Edit Note Group",
+      "description": "Run the Zalo Bot action “Edit Note Group” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "topic_id": {
+          "name": "Topic Id",
+          "description": "Value for topic id."
+        },
+        "title": {
+          "name": "Title",
+          "description": "Value for title."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_list_board": {
+      "name": "Get List Board",
+      "description": "Run the Zalo Bot action “Get List Board” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "create_poll": {
+      "name": "Create Poll",
+      "description": "Run the Zalo Bot action “Create Poll” through Zalo Server.",
+      "fields": {
+        "group_id": {
+          "name": "Group Id",
+          "description": "Value for group id."
+        },
+        "question": {
+          "name": "Question",
+          "description": "Value for question."
+        },
+        "options": {
+          "name": "Options",
+          "description": "Value for options."
+        },
+        "allow_multi_choices": {
+          "name": "Allow Multi Choices",
+          "description": "Value for allow multi choices."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_poll_detail": {
+      "name": "Get Poll Detail",
+      "description": "Run the Zalo Bot action “Get Poll Detail” through Zalo Server.",
+      "fields": {
+        "poll_id": {
+          "name": "Poll Id",
+          "description": "Value for poll id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "lock_poll": {
+      "name": "Lock Poll",
+      "description": "Run the Zalo Bot action “Lock Poll” through Zalo Server.",
+      "fields": {
+        "poll_id": {
+          "name": "Poll Id",
+          "description": "Value for poll id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "edit_reminder": {
+      "name": "Edit Reminder",
+      "description": "Run the Zalo Bot action “Edit Reminder” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "topic_id": {
+          "name": "Topic Id",
+          "description": "Value for topic id."
+        },
+        "title": {
+          "name": "Title",
+          "description": "Value for title."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_reminder": {
+      "name": "Get Reminder",
+      "description": "Run the Zalo Bot action “Get Reminder” through Zalo Server.",
+      "fields": {
+        "reminder_id": {
+          "name": "Reminder Id",
+          "description": "Value for reminder id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_list_reminder": {
+      "name": "Get List Reminder",
+      "description": "Run the Zalo Bot action “Get List Reminder” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Type",
+          "description": "Value for type."
+        }
+      }
+    },
+    "get_reminder_responses": {
+      "name": "Get Reminder Responses",
+      "description": "Run the Zalo Bot action “Get Reminder Responses” through Zalo Server.",
+      "fields": {
+        "reminder_id": {
+          "name": "Reminder Id",
+          "description": "Value for reminder id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "add_quick_message": {
+      "name": "Add Quick Message",
+      "description": "Run the Zalo Bot action “Add Quick Message” through Zalo Server.",
+      "fields": {
+        "keyword": {
+          "name": "Keyword",
+          "description": "Value for keyword."
+        },
+        "title": {
+          "name": "Title",
+          "description": "Value for title."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_quick_message": {
+      "name": "Get Quick Message",
+      "description": "Run the Zalo Bot action “Get Quick Message” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "remove_quick_message": {
+      "name": "Remove Quick Message",
+      "description": "Run the Zalo Bot action “Remove Quick Message” through Zalo Server.",
+      "fields": {
+        "item_ids": {
+          "name": "Item Ids",
+          "description": "Value for item ids."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "update_quick_message": {
+      "name": "Update Quick Message",
+      "description": "Run the Zalo Bot action “Update Quick Message” through Zalo Server.",
+      "fields": {
+        "item_id": {
+          "name": "Item Id",
+          "description": "Value for item id."
+        },
+        "keyword": {
+          "name": "Keyword",
+          "description": "Value for keyword."
+        },
+        "title": {
+          "name": "Title",
+          "description": "Value for title."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_labels": {
+      "name": "Get Labels",
+      "description": "Run the Zalo Bot action “Get Labels” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "block_view_feed": {
+      "name": "Block View Feed",
+      "description": "Run the Zalo Bot action “Block View Feed” through Zalo Server.",
+      "fields": {
+        "user_id": {
+          "name": "User Id",
+          "description": "Value for user id."
+        },
+        "is_block_feed": {
+          "name": "Is Block Feed",
+          "description": "Value for is block feed."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "change_account_avatar": {
+      "name": "Change Account Avatar",
+      "description": "Run the Zalo Bot action “Change Account Avatar” through Zalo Server.",
+      "fields": {
+        "avatar_source": {
+          "name": "Avatar Source",
+          "description": "Value for avatar source."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_avatar_list": {
+      "name": "Get Avatar List",
+      "description": "Run the Zalo Bot action “Get Avatar List” through Zalo Server.",
+      "fields": {
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        },
+        "count": {
+          "name": "Count",
+          "description": "Value for count."
+        },
+        "page": {
+          "name": "Page",
+          "description": "Value for page."
+        }
+      }
+    },
+    "last_online": {
+      "name": "Last Online",
+      "description": "Run the Zalo Bot action “Last Online” through Zalo Server.",
+      "fields": {
+        "user_id": {
+          "name": "User Id",
+          "description": "Value for user id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "send_typing_event": {
+      "name": "Send Typing Event",
+      "description": "Run the Zalo Bot action “Send Typing Event” through Zalo Server.",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Value for thread id."
+        },
+        "account_selection": {
+          "name": "Zalo account",
+          "description": "Value for zalo account."
+        }
+      }
+    },
+    "get_login_qr": {
+      "name": "Get Login Qr",
+      "description": "Run the Zalo Bot action “Get Login Qr” through Zalo Server.",
+      "fields": {}
+    }
+  }
+}

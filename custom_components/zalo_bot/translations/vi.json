@@ -1,0 +1,1682 @@
+{
+  "title": "Zalo Bot",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Kết nối Zalo Server",
+        "description": "Nhập địa chỉ Zalo Server và tài khoản quản trị. Có thể dùng port tùy chỉnh, ví dụ http://192.168.1.10:3100.",
+        "data": {
+          "zalo_server": "Địa chỉ Zalo Server",
+          "username": "Tên đăng nhập",
+          "password": "Mật khẩu",
+          "enable_notifications": "Bật thông báo kết quả"
+        },
+        "data_description": {
+          "zalo_server": "URL đầy đủ gồm http/https và port nếu không dùng port mặc định.",
+          "username": "Tài khoản quản trị của Zalo Server.",
+          "password": "Mật khẩu quản trị của Zalo Server.",
+          "enable_notifications": "Hiển thị persistent notification cho kết quả service."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Không thể kết nối tới Zalo Server.",
+      "invalid_auth": "Tên đăng nhập hoặc mật khẩu không đúng."
+    },
+    "abort": {
+      "already_configured": "Zalo Bot đã được cấu hình."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Tùy chọn Zalo Bot",
+        "description": "Cập nhật địa chỉ hoặc thông tin đăng nhập Zalo Server.",
+        "data": {
+          "zalo_server": "Địa chỉ Zalo Server",
+          "username": "Tên đăng nhập",
+          "password": "Mật khẩu",
+          "enable_notifications": "Bật thông báo kết quả"
+        },
+        "data_description": {
+          "zalo_server": "URL đầy đủ gồm http/https và port nếu cần.",
+          "username": "Tài khoản quản trị Zalo Server.",
+          "password": "Mật khẩu quản trị Zalo Server.",
+          "enable_notifications": "Hiển thị persistent notification cho kết quả service."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Không thể kết nối tới Zalo Server.",
+      "invalid_auth": "Tên đăng nhập hoặc mật khẩu không đúng."
+    }
+  },
+  "services": {
+    "send_message": {
+      "name": "Gửi tin nhắn Zalo",
+      "description": "Gửi tin nhắn Zalo",
+      "fields": {
+        "message": {
+          "name": "Nội dung tin nhắn",
+          "description": "Nội dung tin nhắn"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ThreadId nhận tin nhắn (user hoặc group)"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại tài khoản gửi"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại gửi: 0=user, 1=group (mặc định 0)"
+        },
+        "ttl": {
+          "name": "Thời gian tự xóa",
+          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+        },
+        "quote": {
+          "name": "Tin nhắn trích dẫn",
+          "description": "Trích dẫn trả lời tin nhắn (cần có 2 trường bắt buộc: content và uidFrom)"
+        }
+      }
+    },
+    "send_file": {
+      "name": "Gửi một file bất kỳ qua URL hoặc từ đường dẫn cục bộ",
+      "description": "Gửi một file bất kỳ qua URL hoặc từ đường dẫn cục bộ.",
+      "fields": {
+        "file_path_or_url": {
+          "name": "Đường dẫn file hoặc URL",
+          "description": "Đường dẫn file trên Home Assistant hoặc URL của file cần gửi."
+        },
+        "message": {
+          "name": "Nội dung tin nhắn",
+          "description": "Nội dung tin nhắn gửi kèm (tùy chọn)"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ThreadId nhận tin nhắn (user hoặc group)"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản gửi"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại gửi: 0=user, 1=group (mặc định 0)"
+        },
+        "ttl": {
+          "name": "Thời gian tự xóa",
+          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+        }
+      }
+    },
+    "send_image": {
+      "name": "Gửi ảnh Zalo",
+      "description": "Gửi ảnh Zalo",
+      "fields": {
+        "image_path": {
+          "name": "Đường dẫn ảnh",
+          "description": "Đường dẫn file ảnh trên Home Assistant"
+        },
+        "message": {
+          "name": "Nội dung tin nhắn",
+          "description": "Nội dung tin nhắn gửi kèm ảnh (tùy chọn)"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ThreadId nhận ảnh (user hoặc group)"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại tài khoản gửi"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại gửi: 0=user, 1=group (mặc định 0)"
+        },
+        "ttl": {
+          "name": "Thời gian tự xóa",
+          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+        }
+      }
+    },
+    "get_logged_accounts": {
+      "name": "Lấy danh sách tài khoản Zalo đã login",
+      "description": "Lấy danh sách tài khoản Zalo đã login",
+      "fields": {}
+    },
+    "get_account_details": {
+      "name": "Lấy chi tiết một tài khoản Zalo",
+      "description": "Lấy chi tiết một tài khoản Zalo",
+      "fields": {
+        "own_id": {
+          "name": "Own ID",
+          "description": "Own ID của tài khoản"
+        }
+      }
+    },
+    "find_user": {
+      "name": "Tìm user bằng số điện thoại",
+      "description": "Tìm user bằng số điện thoại",
+      "fields": {
+        "phone": {
+          "name": "Số điện thoại",
+          "description": "Số điện thoại"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số ĐT hoặc OwnID của bot"
+        }
+      }
+    },
+    "get_user_info": {
+      "name": "Lấy thông tin user",
+      "description": "Lấy thông tin user",
+      "fields": {
+        "user_id": {
+          "name": "User ID",
+          "description": "User ID"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số ĐT hoặc OwnID của bot"
+        }
+      }
+    },
+    "send_friend_request": {
+      "name": "Gửi lời mời kết bạn",
+      "description": "Gửi lời mời kết bạn",
+      "fields": {
+        "user_id": {
+          "name": "User ID",
+          "description": "User ID"
+        },
+        "message": {
+          "name": "Nội dung tin nhắn",
+          "description": "Tin nhắn mời"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số ĐT hoặc OwnID của bot"
+        }
+      }
+    },
+    "create_group": {
+      "name": "Tạo group mới",
+      "description": "Tạo group mới",
+      "fields": {
+        "members": {
+          "name": "Thành viên",
+          "description": "Danh sách members (comma-separated)"
+        },
+        "name": {
+          "name": "Tên",
+          "description": "Tên group"
+        },
+        "avatar_path": {
+          "name": "Avatar Path",
+          "description": "Đường dẫn avatar"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số ĐT hoặc OwnID của bot"
+        }
+      }
+    },
+    "get_group_info": {
+      "name": "Lấy info group",
+      "description": "Lấy info group",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "Group ID (comma-separated for multiple)"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số ĐT hoặc OwnID của bot"
+        }
+      }
+    },
+    "add_user_to_group": {
+      "name": "Thêm thành viên vào group",
+      "description": "Thêm thành viên vào group",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "Group ID"
+        },
+        "member_id": {
+          "name": "Member Id",
+          "description": "Member ID (comma-separated for multiple)"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số ĐT hoặc OwnID của bot"
+        }
+      }
+    },
+    "remove_user_from_group": {
+      "name": "Xóa thành viên khỏi group",
+      "description": "Xóa thành viên khỏi group",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "Group ID"
+        },
+        "member_id": {
+          "name": "Member Id",
+          "description": "Member ID (comma-separated for multiple)"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số ĐT hoặc OwnID của bot"
+        }
+      }
+    },
+    "send_image_to_user": {
+      "name": "Gửi 1 ảnh đến user",
+      "description": "Gửi 1 ảnh đến user",
+      "fields": {
+        "image_path": {
+          "name": "Đường dẫn ảnh",
+          "description": "Đường dẫn ảnh"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Thread ID"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số ĐT hoặc OwnID của bot"
+        },
+        "ttl": {
+          "name": "Thời gian tự xóa",
+          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+        }
+      }
+    },
+    "send_images_to_user": {
+      "name": "Gửi nhiều ảnh đến user",
+      "description": "Gửi nhiều ảnh đến user",
+      "fields": {
+        "image_paths": {
+          "name": "Danh sách đường dẫn ảnh",
+          "description": "Danh sách paths (comma-separated)"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Thread ID"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số ĐT hoặc OwnID của bot"
+        },
+        "ttl": {
+          "name": "Thời gian tự xóa",
+          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+        }
+      }
+    },
+    "send_image_to_group": {
+      "name": "Gửi 1 ảnh đến group",
+      "description": "Gửi 1 ảnh đến group",
+      "fields": {
+        "image_path": {
+          "name": "Đường dẫn ảnh",
+          "description": "Đường dẫn ảnh"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Thread ID"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số ĐT hoặc OwnID của bot"
+        },
+        "ttl": {
+          "name": "Thời gian tự xóa",
+          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+        }
+      }
+    },
+    "send_images_to_group": {
+      "name": "Gửi nhiều ảnh đến group",
+      "description": "Gửi nhiều ảnh đến group",
+      "fields": {
+        "image_paths": {
+          "name": "Danh sách đường dẫn ảnh",
+          "description": "Danh sách paths (comma-separated)"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "Thread ID"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số ĐT hoặc OwnID của bot"
+        },
+        "ttl": {
+          "name": "Thời gian tự xóa",
+          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+        }
+      }
+    },
+    "get_account_webhooks": {
+      "name": "Lấy tất cả config webhook",
+      "description": "Lấy tất cả config webhook",
+      "fields": {}
+    },
+    "get_account_webhook": {
+      "name": "Lấy config webhook cho account",
+      "description": "Lấy config webhook cho account",
+      "fields": {
+        "own_id": {
+          "name": "Own ID",
+          "description": "Own ID"
+        }
+      }
+    },
+    "set_account_webhook": {
+      "name": "Cập nhật config webhook",
+      "description": "Cập nhật config webhook",
+      "fields": {
+        "own_id": {
+          "name": "Own ID",
+          "description": "Own ID"
+        },
+        "message_webhook_url": {
+          "name": "Message Webhook Url",
+          "description": "URL cho message"
+        },
+        "group_event_webhook_url": {
+          "name": "Group Event Webhook Url",
+          "description": "URL cho group event"
+        },
+        "reaction_webhook_url": {
+          "name": "Reaction Webhook Url",
+          "description": "URL cho reaction"
+        }
+      }
+    },
+    "delete_account_webhook": {
+      "name": "Xóa config webhook",
+      "description": "Xóa config webhook",
+      "fields": {
+        "own_id": {
+          "name": "Own ID",
+          "description": "Own ID"
+        }
+      }
+    },
+    "get_proxies": {
+      "name": "Lấy danh sách proxy",
+      "description": "Lấy danh sách proxy",
+      "fields": {}
+    },
+    "add_proxy": {
+      "name": "Thêm proxy mới",
+      "description": "Thêm proxy mới",
+      "fields": {
+        "proxy_url": {
+          "name": "URL proxy",
+          "description": "URL proxy"
+        }
+      }
+    },
+    "remove_proxy": {
+      "name": "Xóa proxy",
+      "description": "Xóa proxy",
+      "fields": {
+        "proxy_url": {
+          "name": "URL proxy",
+          "description": "URL proxy"
+        }
+      }
+    },
+    "accept_friend_request": {
+      "name": "Chấp nhận lời mời kết bạn từ một người dùng",
+      "description": "Chấp nhận lời mời kết bạn từ một người dùng",
+      "fields": {
+        "user_id": {
+          "name": "User ID",
+          "description": "ID người dùng đã gửi lời mời kết bạn"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "block_user": {
+      "name": "Chặn một người dùng",
+      "description": "Chặn một người dùng",
+      "fields": {
+        "user_id": {
+          "name": "User ID",
+          "description": "ID người dùng cần chặn"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "unblock_user": {
+      "name": "Bỏ chặn một người dùng",
+      "description": "Bỏ chặn một người dùng",
+      "fields": {
+        "user_id": {
+          "name": "User ID",
+          "description": "ID người dùng cần bỏ chặn"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "send_sticker": {
+      "name": "Gửi sticker",
+      "description": "Gửi sticker",
+      "fields": {
+        "sticker_id": {
+          "name": "Sticker Id",
+          "description": "ID của sticker cần gửi"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ThreadId nhận sticker (user hoặc group)"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại gửi: 0=user, 1=group (mặc định 0)"
+        }
+      }
+    },
+    "undo_message": {
+      "name": "Thu hồi tin nhắn đã gửi",
+      "description": "Thu hồi tin nhắn đã gửi",
+      "fields": {
+        "msg_id": {
+          "name": "Message ID",
+          "description": "ID của tin nhắn cần thu hồi"
+        },
+        "cli_msg_id": {
+          "name": "Client Message ID",
+          "description": "Client message ID (cliMsgId) của tin nhắn cần thu hồi."
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ThreadId của cuộc trò chuyện"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại tin nhắn: 0=user, 1=group (mặc định 0)"
+        }
+      }
+    },
+    "create_reminder": {
+      "name": "Tạo nhắc nhở mới",
+      "description": "Tạo nhắc nhở mới",
+      "fields": {
+        "title": {
+          "name": "Title",
+          "description": "Tiêu đề nhắc nhở"
+        },
+        "content": {
+          "name": "Content",
+          "description": "Nội dung nhắc nhở"
+        },
+        "remind_time": {
+          "name": "Remind Time",
+          "description": "Thời gian nhắc nhở (timestamp)"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ThreadId của cuộc trò chuyện"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại nhắc nhở: 0=user, 1=group (mặc định 0)"
+        }
+      }
+    },
+    "remove_reminder": {
+      "name": "Xóa nhắc nhở",
+      "description": "Xóa nhắc nhở",
+      "fields": {
+        "reminder_id": {
+          "name": "Reminder Id",
+          "description": "ID của nhắc nhở cần xóa"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ThreadId của cuộc trò chuyện"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại nhắc nhở: 0=user, 1=group (mặc định 0)"
+        }
+      }
+    },
+    "change_group_name": {
+      "name": "Đổi tên nhóm",
+      "description": "Đổi tên nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "name": {
+          "name": "Tên",
+          "description": "Tên mới của nhóm"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "change_group_avatar": {
+      "name": "Đổi ảnh đại diện nhóm",
+      "description": "Đổi ảnh đại diện nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "image_path": {
+          "name": "Đường dẫn ảnh",
+          "description": "Đường dẫn đến ảnh mới"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "send_voice": {
+      "name": "Gửi tin nhắn thoại",
+      "description": "Gửi tin nhắn thoại",
+      "fields": {
+        "voice_path": {
+          "name": "Đường dẫn file âm thanh",
+          "description": "Đường dẫn đến file âm thanh"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ThreadId nhận tin nhắn thoại"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại gửi: 0=user, 1=group (mặc định 0)"
+        }
+      }
+    },
+    "get_all_friends": {
+      "name": "Lấy danh sách tất cả bạn bè",
+      "description": "Lấy danh sách tất cả bạn bè",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_received_friend_requests": {
+      "name": "Lấy lời mời kết bạn đã nhận",
+      "description": "Lấy danh sách lời mời kết bạn đang chờ mà tài khoản Zalo đã nhận.",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản."
+        }
+      }
+    },
+    "get_sent_friend_requests": {
+      "name": "Lấy danh sách lời mời kết bạn đã gửi",
+      "description": "Lấy danh sách lời mời kết bạn đã gửi",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "undo_friend_request": {
+      "name": "Thu hồi lời mời kết bạn đã gửi",
+      "description": "Thu hồi lời mời kết bạn đã gửi",
+      "fields": {
+        "friend_id": {
+          "name": "Friend Id",
+          "description": "ID người dùng đã gửi lời mời"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "remove_friend": {
+      "name": "Hủy kết bạn với một người dùng",
+      "description": "Hủy kết bạn với một người dùng",
+      "fields": {
+        "friend_id": {
+          "name": "Friend Id",
+          "description": "ID người bạn cần hủy kết bạn"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "change_friend_alias": {
+      "name": "Thay đổi biệt danh của một người bạn",
+      "description": "Thay đổi biệt danh của một người bạn",
+      "fields": {
+        "friend_id": {
+          "name": "Friend Id",
+          "description": "ID người bạn cần đổi biệt danh"
+        },
+        "alias": {
+          "name": "Alias",
+          "description": "Biệt danh mới"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "remove_friend_alias": {
+      "name": "Xóa biệt danh của một người bạn",
+      "description": "Xóa biệt danh của một người bạn",
+      "fields": {
+        "friend_id": {
+          "name": "Friend Id",
+          "description": "ID người bạn cần xóa biệt danh"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_all_groups": {
+      "name": "Lấy danh sách tất cả nhóm đã tham gia",
+      "description": "Lấy danh sách tất cả nhóm đã tham gia",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_group_chat_history": {
+      "name": "Lấy lịch sử tin nhắn nhóm",
+      "description": "Lấy các tin nhắn nhóm gần nhất đã được Zalo Server lưu bền vững trong bộ nhớ cục bộ.",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm."
+        },
+        "count": {
+          "name": "Số lượng",
+          "description": "Số tin nhắn gần nhất cần lấy (1-200)."
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản."
+        }
+      }
+    },
+    "add_group_deputy": {
+      "name": "Thêm phó nhóm",
+      "description": "Thêm phó nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "member_id": {
+          "name": "Member Id",
+          "description": "ID thành viên cần thêm làm phó nhóm"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "remove_group_deputy": {
+      "name": "Xóa phó nhóm",
+      "description": "Xóa phó nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "member_id": {
+          "name": "Member Id",
+          "description": "ID thành viên cần xóa quyền phó nhóm"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "change_group_owner": {
+      "name": "Chuyển quyền sở hữu nhóm",
+      "description": "Chuyển quyền sở hữu nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "member_id": {
+          "name": "Member Id",
+          "description": "ID thành viên được chuyển quyền sở hữu"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "disperse_group": {
+      "name": "Giải tán nhóm",
+      "description": "Giải tán nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "enable_group_link": {
+      "name": "Kích hoạt và lấy link tham gia nhóm",
+      "description": "Kích hoạt và lấy link tham gia nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "disable_group_link": {
+      "name": "Vô hiệu hóa link tham gia nhóm",
+      "description": "Vô hiệu hóa link tham gia nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "join_group": {
+      "name": "Tham gia nhóm bằng link mời",
+      "description": "Tham gia nhóm bằng link mời",
+      "fields": {
+        "link": {
+          "name": "Liên kết",
+          "description": "Link mời tham gia nhóm"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "leave_group": {
+      "name": "Rời khỏi nhóm",
+      "description": "Rời khỏi nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "silent": {
+          "name": "Silent",
+          "description": "Rời nhóm trong im lặng"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "update_profile": {
+      "name": "Cập nhật thông tin cá nhân",
+      "description": "Cập nhật thông tin cá nhân",
+      "fields": {
+        "name": {
+          "name": "Tên",
+          "description": "Tên mới"
+        },
+        "dob": {
+          "name": "Dob",
+          "description": "Ngày sinh (yyyy-mm-dd)"
+        },
+        "gender": {
+          "name": "Gender",
+          "description": "Giới tính"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "update_settings": {
+      "name": "Cập nhật cài đặt riêng tư",
+      "description": "Cập nhật cài đặt riêng tư",
+      "fields": {
+        "setting_type": {
+          "name": "Setting Type",
+          "description": "Loại cài đặt"
+        },
+        "status": {
+          "name": "Status",
+          "description": "Trạng thái"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "set_mute": {
+      "name": "Tắt thông báo cho cuộc trò chuyện",
+      "description": "Tắt thông báo cho cuộc trò chuyện",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "duration": {
+          "name": "Duration",
+          "description": "Thời gian tắt thông báo"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại cuộc trò chuyện"
+        }
+      }
+    },
+    "set_pinned_conversation": {
+      "name": "Ghim hoặc bỏ ghim cuộc trò chuyện",
+      "description": "Ghim hoặc bỏ ghim cuộc trò chuyện",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "pinned": {
+          "name": "Pinned",
+          "description": "Ghim hay bỏ ghim"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại cuộc trò chuyện"
+        }
+      }
+    },
+    "get_unread_mark": {
+      "name": "Lấy danh sách các cuộc trò chuyện được đánh dấu là chưa đọc",
+      "description": "Lấy danh sách các cuộc trò chuyện được đánh dấu là chưa đọc",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "add_unread_mark": {
+      "name": "Đánh dấu một cuộc trò chuyện là chưa đọc",
+      "description": "Đánh dấu một cuộc trò chuyện là chưa đọc",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "remove_unread_mark": {
+      "name": "Bỏ đánh dấu chưa đọc cho một cuộc trò chuyện",
+      "description": "Bỏ đánh dấu chưa đọc cho một cuộc trò chuyện",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "delete_chat": {
+      "name": "Xóa một cuộc trò chuyện khỏi danh sách",
+      "description": "Xóa một cuộc trò chuyện khỏi danh sách",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_archived_chat_list": {
+      "name": "Lấy danh sách các cuộc trò chuyện đã được lưu trữ",
+      "description": "Lấy danh sách các cuộc trò chuyện đã được lưu trữ",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_auto_delete_chat": {
+      "name": "Lấy danh sách các cuộc trò chuyện đang bật tự động xóa tin nhắn",
+      "description": "Lấy danh sách các cuộc trò chuyện đang bật tự động xóa tin nhắn",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "update_auto_delete_chat": {
+      "name": "Bật/tắt chế độ tự động xóa tin nhắn",
+      "description": "Bật/tắt chế độ tự động xóa tin nhắn",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "ttl": {
+          "name": "Thời gian tự xóa",
+          "description": "Chế độ Auto Delete của cuộc trò chuyện."
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại cuộc trò chuyện: user hoặc group."
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_hidden_conversations": {
+      "name": "Lấy danh sách các cuộc trò chuyện đang bị ẩn bằng mã PIN",
+      "description": "Lấy danh sách các cuộc trò chuyện đang bị ẩn bằng mã PIN",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "set_hidden_conversations": {
+      "name": "Ẩn hoặc bỏ ẩn một cuộc trò chuyện",
+      "description": "Ẩn hoặc bỏ ẩn một cuộc trò chuyện",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "hidden": {
+          "name": "Hidden",
+          "description": "Ẩn hoặc hiện cuộc trò chuyện"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "update_hidden_convers_pin": {
+      "name": "Đặt hoặc thay đổi mã PIN cho các cuộc trò chuyện ẩn",
+      "description": "Đặt hoặc thay đổi mã PIN cho các cuộc trò chuyện ẩn",
+      "fields": {
+        "pin": {
+          "name": "Pin",
+          "description": "Mã PIN mới"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "reset_hidden_convers_pin": {
+      "name": "Gỡ bỏ mã PIN cho các cuộc trò chuyện ẩn",
+      "description": "Gỡ bỏ mã PIN cho các cuộc trò chuyện ẩn",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_mute": {
+      "name": "Lấy danh sách các cuộc trò chuyện đang bị tắt thông báo",
+      "description": "Lấy danh sách các cuộc trò chuyện đang bị tắt thông báo",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_pin_conversations": {
+      "name": "Lấy danh sách các cuộc trò chuyện đã được ghim",
+      "description": "Lấy danh sách các cuộc trò chuyện đã được ghim",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "add_reaction": {
+      "name": "Thả cảm xúc vào một tin nhắn",
+      "description": "Thả cảm xúc vào một tin nhắn",
+      "fields": {
+        "icon": {
+          "name": "Icon",
+          "description": "Tên cảm xúc"
+        },
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "msg_id": {
+          "name": "Message ID",
+          "description": "ID tin nhắn cần thả cảm xúc"
+        },
+        "cli_msg_id": {
+          "name": "Client Message ID",
+          "description": "ID client của tin nhắn"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại cuộc trò chuyện"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "delete_message": {
+      "name": "Xóa một tin nhắn (chỉ ở phía mình)",
+      "description": "Xóa một tin nhắn (chỉ ở phía mình)",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "msg_id": {
+          "name": "Message ID",
+          "description": "ID tin nhắn cần xóa"
+        },
+        "cli_msg_id": {
+          "name": "Client Message ID",
+          "description": "ID client của tin nhắn"
+        },
+        "uid_from": {
+          "name": "Uid From",
+          "description": "ID người gửi tin nhắn"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại cuộc trò chuyện"
+        },
+        "only_me": {
+          "name": "Only Me",
+          "description": "Chỉ xóa ở phía mình"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "forward_message": {
+      "name": "Chuyển tiếp một tin nhắn",
+      "description": "Chuyển tiếp một tin nhắn",
+      "fields": {
+        "message": {
+          "name": "Nội dung tin nhắn",
+          "description": "Nội dung tin nhắn gốc (mã hóa)"
+        },
+        "thread_ids": {
+          "name": "Thread Ids",
+          "description": "Danh sách ID cuộc trò chuyện nhận tin nhắn, phân cách bởi dấu phẩy"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại cuộc trò chuyện nhận tin nhắn"
+        }
+      }
+    },
+    "parse_link": {
+      "name": "Phân tích link để lấy thông tin preview",
+      "description": "Phân tích link để lấy thông tin preview",
+      "fields": {
+        "link": {
+          "name": "Liên kết",
+          "description": "URL cần phân tích"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "send_card": {
+      "name": "Gửi danh thiếp của một người dùng",
+      "description": "Gửi danh thiếp của một người dùng",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "user_id": {
+          "name": "User ID",
+          "description": "ID người dùng của danh thiếp"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "send_link": {
+      "name": "Gửi một tin nhắn chứa liên kết có preview",
+      "description": "Gửi một tin nhắn chứa liên kết có preview",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "link": {
+          "name": "Liên kết",
+          "description": "URL cần gửi"
+        },
+        "message": {
+          "name": "Nội dung tin nhắn",
+          "description": "Nội dung tin nhắn đi kèm"
+        },
+        "thumbnail": {
+          "name": "Thumbnail",
+          "description": "URL thumbnail tùy chỉnh"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_stickers": {
+      "name": "Tìm kiếm sticker theo từ khóa",
+      "description": "Tìm kiếm sticker theo từ khóa",
+      "fields": {
+        "query": {
+          "name": "Query",
+          "description": "Từ khóa tìm kiếm"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_stickers_detail": {
+      "name": "Lấy thông tin chi tiết của một bộ sticker",
+      "description": "Lấy thông tin chi tiết của một bộ sticker",
+      "fields": {
+        "sticker_album": {
+          "name": "Sticker Album",
+          "description": "ID album sticker"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "send_video": {
+      "name": "Gửi video qua URL hoặc từ đường dẫn cục bộ",
+      "description": "Gửi video qua URL hoặc từ đường dẫn cục bộ",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "video_path_or_url": {
+          "name": "Đường dẫn video hoặc URL",
+          "description": "Đường dẫn file video trên Home Assistant hoặc URL của video cần gửi"
+        },
+        "thumbnail_url": {
+          "name": "URL ảnh đại diện video",
+          "description": "URL thumbnail của video hoặc đường dẫn file local (nếu không có sẽ dùng video làm thumbnail)"
+        },
+        "message": {
+          "name": "Nội dung tin nhắn",
+          "description": "Tin nhắn kèm theo"
+        },
+        "width": {
+          "name": "Width",
+          "description": "Chiều rộng video (pixels)"
+        },
+        "height": {
+          "name": "Height",
+          "description": "Chiều cao video (pixels)"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại gửi: 0=user, 1=group (mặc định 0)"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "create_note_group": {
+      "name": "Tạo ghi chú mới trong nhóm",
+      "description": "Tạo ghi chú mới trong nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "title": {
+          "name": "Title",
+          "description": "Tiêu đề ghi chú"
+        },
+        "pin_act": {
+          "name": "Pin Act",
+          "description": "Ghim ghi chú"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "edit_note_group": {
+      "name": "Chỉnh sửa ghi chú trong nhóm",
+      "description": "Chỉnh sửa ghi chú trong nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "topic_id": {
+          "name": "Topic Id",
+          "description": "ID của ghi chú"
+        },
+        "title": {
+          "name": "Title",
+          "description": "Nội dung ghi chú mới"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_list_board": {
+      "name": "Lấy danh sách các mục trên bảng tin của nhóm",
+      "description": "Lấy danh sách các mục trên bảng tin của nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "create_poll": {
+      "name": "Tạo một cuộc bình chọn trong nhóm",
+      "description": "Tạo một cuộc bình chọn trong nhóm",
+      "fields": {
+        "group_id": {
+          "name": "Group ID",
+          "description": "ID của nhóm"
+        },
+        "question": {
+          "name": "Question",
+          "description": "Câu hỏi bình chọn"
+        },
+        "options": {
+          "name": "Options",
+          "description": "Các lựa chọn (phân cách bởi dấu phẩy)"
+        },
+        "allow_multi_choices": {
+          "name": "Allow Multi Choices",
+          "description": "Cho phép chọn nhiều lựa chọn"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_poll_detail": {
+      "name": "Lấy thông tin chi tiết của một cuộc bình chọn",
+      "description": "Lấy thông tin chi tiết của một cuộc bình chọn",
+      "fields": {
+        "poll_id": {
+          "name": "Poll Id",
+          "description": "ID của cuộc bình chọn"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "lock_poll": {
+      "name": "Khóa một cuộc bình chọn",
+      "description": "Khóa một cuộc bình chọn",
+      "fields": {
+        "poll_id": {
+          "name": "Poll Id",
+          "description": "ID của cuộc bình chọn"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "edit_reminder": {
+      "name": "Chỉnh sửa một nhắc hẹn",
+      "description": "Chỉnh sửa một nhắc hẹn",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "topic_id": {
+          "name": "Topic Id",
+          "description": "ID của nhắc hẹn"
+        },
+        "title": {
+          "name": "Title",
+          "description": "Tiêu đề mới"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_reminder": {
+      "name": "Lấy thông tin chi tiết của một nhắc hẹn",
+      "description": "Lấy thông tin chi tiết của một nhắc hẹn",
+      "fields": {
+        "reminder_id": {
+          "name": "Reminder Id",
+          "description": "ID của nhắc hẹn"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_list_reminder": {
+      "name": "Lấy danh sách các nhắc hẹn trong một cuộc trò chuyện",
+      "description": "Lấy danh sách các nhắc hẹn trong một cuộc trò chuyện",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ID cuộc trò chuyện"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại hội thoại",
+          "description": "Loại cuộc trò chuyện"
+        }
+      }
+    },
+    "get_reminder_responses": {
+      "name": "Lấy danh sách phản hồi cho một nhắc hẹn",
+      "description": "Lấy danh sách phản hồi cho một nhắc hẹn",
+      "fields": {
+        "reminder_id": {
+          "name": "Reminder Id",
+          "description": "ID của nhắc hẹn"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "add_quick_message": {
+      "name": "Thêm một tin nhắn nhanh mới",
+      "description": "Thêm một tin nhắn nhanh mới",
+      "fields": {
+        "keyword": {
+          "name": "Keyword",
+          "description": "Từ khóa để gọi tin nhắn nhanh"
+        },
+        "title": {
+          "name": "Title",
+          "description": "Nội dung tin nhắn nhanh"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_quick_message": {
+      "name": "Lấy danh sách tin nhắn nhanh",
+      "description": "Lấy danh sách tin nhắn nhanh",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "remove_quick_message": {
+      "name": "Xóa tin nhắn nhanh",
+      "description": "Xóa tin nhắn nhanh",
+      "fields": {
+        "item_ids": {
+          "name": "Item Ids",
+          "description": "ID hoặc danh sách ID tin nhắn nhanh cần xóa"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "update_quick_message": {
+      "name": "Cập nhật tin nhắn nhanh",
+      "description": "Cập nhật tin nhắn nhanh",
+      "fields": {
+        "item_id": {
+          "name": "Item Id",
+          "description": "ID tin nhắn nhanh"
+        },
+        "keyword": {
+          "name": "Keyword",
+          "description": "Từ khóa mới"
+        },
+        "title": {
+          "name": "Title",
+          "description": "Nội dung mới"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_labels": {
+      "name": "Lấy danh sách các nhãn",
+      "description": "Lấy danh sách các nhãn",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "block_view_feed": {
+      "name": "Chặn/bỏ chặn một người bạn xem nhật ký",
+      "description": "Chặn/bỏ chặn một người bạn xem nhật ký",
+      "fields": {
+        "user_id": {
+          "name": "User ID",
+          "description": "ID người bạn"
+        },
+        "is_block_feed": {
+          "name": "Is Block Feed",
+          "description": "Chặn hoặc bỏ chặn"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "change_account_avatar": {
+      "name": "Thay đổi ảnh đại diện",
+      "description": "Thay đổi ảnh đại diện",
+      "fields": {
+        "avatar_source": {
+          "name": "Avatar Source",
+          "description": "Đường dẫn đến file ảnh"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "get_avatar_list": {
+      "name": "Lấy danh sách các ảnh đại diện đã sử dụng",
+      "description": "Lấy danh sách các ảnh đại diện đã sử dụng",
+      "fields": {
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "count": {
+          "name": "Count",
+          "description": "Số lượng ảnh tối đa cần lấy"
+        },
+        "page": {
+          "name": "Page",
+          "description": "Trang dữ liệu cần lấy"
+        }
+      }
+    },
+    "last_online": {
+      "name": "Xem thời gian hoạt động cuối cùng của một người dùng",
+      "description": "Xem thời gian hoạt động cuối cùng của một người dùng",
+      "fields": {
+        "user_id": {
+          "name": "User ID",
+          "description": "ID người dùng cần xem"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản"
+        }
+      }
+    },
+    "send_typing_event": {
+      "name": "Gửi thông báo đang soạn tin nhắn",
+      "description": "Gửi thông báo đang soạn tin nhắn",
+      "fields": {
+        "thread_id": {
+          "name": "Thread ID",
+          "description": "ThreadId nhận thông báo (group sẽ không hiện)"
+        },
+        "account_selection": {
+          "name": "Tài khoản Zalo",
+          "description": "Số điện thoại hoặc ID tài khoản gửi"
+        }
+      }
+    },
+    "get_login_qr": {
+      "name": "Lấy mã QR đăng nhập Zalo từ server và hiển thị lên thông báo",
+      "description": "Lấy mã QR đăng nhập Zalo từ server và hiển thị lên thông báo.",
+      "fields": {}
+    }
+  }
+}

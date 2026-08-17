@@ -1,0 +1,14 @@
+{
+  "domain": "zalo_bot",
+  "name": "Zalo Bot",
+  "codeowners": [
+    "@khaisilk1910"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/khaisilk1910/zalo-bot-hacs",
+  "integration_type": "hub",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/khaisilk1910/zalo-bot-hacs/issues",
+  "single_config_entry": true,
+  "version": "2026.8.17.3"
+}
