@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import threading
 import time
-from urllib.parse import urlsplit
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -143,6 +145,19 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def _read_integration_version() -> str:
+    """Read the integration version from manifest.json to avoid stale hard-coded values."""
+    try:
+        manifest_path = Path(__file__).with_name("manifest.json")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        return str(manifest.get("version") or "unknown")
+    except (OSError, ValueError, TypeError):
+        return "unknown"
+
+
+_INTEGRATION_VERSION = _read_integration_version()
 
 
 class TimeoutSession(requests.Session):
@@ -338,7 +353,7 @@ def get_device_info() -> DeviceInfo:
         name="Zalo Bot",
         manufacturer="Smarthome Black",
         model="Zalo Bot",
-        sw_version="2026.8.17.3",
+        sw_version=_INTEGRATION_VERSION,
     )
 
 

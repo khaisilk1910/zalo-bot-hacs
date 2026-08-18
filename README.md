@@ -2,7 +2,7 @@
 
 Custom integration cho Home Assistant kết nối tới **Zalo Bot Server** để gửi/nhận thao tác Zalo trong automation, script và Developer Tools.
 
-> Phiên bản tài liệu này dành cho **Zalo Bot HACS v2026.8.17.3** và được rà soát tương thích với **Zalo Bot Server v1.0.6**.
+> Phiên bản tài liệu này dành cho **Zalo Bot HACS v2026.8.18.1** và được rà soát tương thích với **Zalo Bot Server v1.0.6**.
 
 ## Tính năng
 
@@ -31,6 +31,21 @@ Custom integration cho Home Assistant kết nối tới **Zalo Bot Server** đ�
 > README của integration này không chứa cấu hình Docker/Stack. Cách triển khai server và volume được tài liệu tại repo **zalo-bot-server**.
 
 ## Cài đặt qua HACS
+
+> **Quan trọng:** HACS chỉ cài được repository GitHub **public**. Trước khi thêm vào HACS, hãy bảo đảm repository `khaisilk1910/zalo-bot-hacs` đã được tạo, đang để **Public**, có branch mặc định chứa trực tiếp `hacs.json`, `README.md` và thư mục `custom_components/zalo_bot`. Nếu URL GitHub/API trả `404`, HACS cũng sẽ báo lỗi và chưa thể cài đặt.
+
+### 0. Chuẩn bị repository GitHub
+
+Trên GitHub, tạo repository chính xác với tên `zalo-bot-hacs` dưới tài khoản `khaisilk1910`, đặt **Public**, bật **Issues**, thêm mô tả repository và ít nhất một topic. Upload **nội dung bên trong** gói release lên root repository; không đặt toàn bộ dự án vào thêm một thư mục cha. Branch mặc định nên là `main`.
+
+Sau khi push, hai URL sau phải mở được mà không cần đăng nhập:
+
+```text
+https://github.com/khaisilk1910/zalo-bot-hacs
+https://api.github.com/repos/khaisilk1910/zalo-bot-hacs
+```
+
+Chỉ tiếp tục add vào HACS khi GitHub API trả metadata repository thay vì `404 Not Found`.
 
 ### 1. Thêm Custom Repository
 
@@ -493,8 +508,8 @@ git push origin main
 Sau đó tạo tag/release mới, ví dụ:
 
 ```bash
-git tag -a v2026.8.18 -m "Zalo Bot HACS v2026.8.18"
-git push origin v2026.8.18
+git tag -a v2026.8.18.1 -m "Zalo Bot HACS v2026.8.18.1"
+git push origin v2026.8.18.1
 ```
 
 Publish GitHub Release tương ứng để HACS nhận phiên bản mới.

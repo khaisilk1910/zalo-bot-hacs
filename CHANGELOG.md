@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.8.18.1
+- Sửa tài liệu cài HACS để nêu rõ repository GitHub phải tồn tại và ở chế độ Public; lỗi GitHub API 404 không thể được xử lý từ phía Home Assistant.
+- Đồng bộ `DeviceInfo.sw_version` tự động từ `manifest.json`, tránh hiển thị phiên bản cũ sau mỗi release.
+- Điều chỉnh workflow HACS theo mẫu chính thức hiện tại và giữ quyền đọc mã nguồn cần thiết cho Hassfest.
+- Giữ nguyên toàn bộ 97 action/service và API behavior của integration.
+
 ## 2026.8.17
 
 ### Compatibility
