@@ -30,7 +30,7 @@ jobs:
       - name: Cập nhật file manifest.json
         run: |
           # Cập nhật đường dẫn tới file manifest.json
-          MANIFEST_PATH="custom_components/cay_gia_pha/manifest.json"
+          MANIFEST_PATH="custom_components/zalo_bot/manifest.json"
           
           # Dùng công cụ jq để sửa file JSON một cách an toàn
           jq '.version = env.VERSION' $MANIFEST_PATH > tmp.json && mv tmp.json $MANIFEST_PATH
