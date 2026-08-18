@@ -1,6 +1,7 @@
 """Các tính năng khác và tiện ích cho Zalo Bot."""
 import logging
 from .notification import show_result_notification
+from .helpers import normalize_thread_type
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,7 +26,7 @@ async def async_undo_message_service(hass, call, zalo_login):
             },
             "threadId": call.data["thread_id"],
             "accountSelection": call.data["account_selection"],
-            "type": 1 if msg_type == "1" else 0,
+            "type": normalize_thread_type(msg_type),
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/undoByAccount", json=payload)
@@ -45,15 +46,17 @@ async def async_create_reminder_service(hass, call, zalo_login):
     """Tạo lời nhắc."""
     _LOGGER.debug("Dịch vụ async_create_reminder được gọi với: %s", call.data)
     try:
+        start_time = int(call.data["remind_time"])
+        if start_time <= 0:
+            raise ValueError("remind_time phải là timestamp mili-giây dương")
         payload = {
             "threadId": call.data["thread_id"],
             "accountSelection": call.data["account_selection"],
-            "type": call.data.get("type", "0"),
+            "type": normalize_thread_type(call.data.get("type", "0")),
             "options": {
                 "title": call.data["title"],
-                "content": call.data["content"],
-                "remindTime": call.data["remind_time"]
-            }
+                "startTime": start_time,
+            },
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/createReminderByAccount", json=payload)
@@ -77,7 +80,7 @@ async def async_remove_reminder_service(hass, call, zalo_login):
             "reminderId": call.data["reminder_id"],
             "threadId": call.data["thread_id"],
             "accountSelection": call.data["account_selection"],
-            "type": call.data.get("type", "0")
+            "type": normalize_thread_type(call.data.get("type", "0"))
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/removeReminderByAccount", json=payload)
@@ -121,15 +124,24 @@ async def async_set_mute_service(hass, call, zalo_login):
     _LOGGER.debug("Dịch vụ async_set_mute được gọi với: %s", call.data)
     try:
         duration = int(call.data.get("duration", 0))
-        action = "mute" if duration > 0 else "unmute"
+        # zca-js 2.1.2 uses MuteAction.MUTE=1 and MuteAction.UNMUTE=3.
+        # Preserve the service UI convention: 0=unmute, -1=mute forever.
+        if duration == 0:
+            action = 3
+            zca_duration = -1
+        elif duration == -1 or duration > 0:
+            action = 1
+            zca_duration = duration
+        else:
+            raise ValueError("duration không hợp lệ; dùng 0, -1 hoặc số giây dương")
         mute_type = call.data.get("type", "0")
-        mute_type_num = 1 if mute_type.lower() == "group" else 0
+        mute_type_num = normalize_thread_type(mute_type)
         payload = {
             "params": {
                 "action": action,
-                "duration": duration
+                "duration": zca_duration,
             },
-            "threadId": call.data["thread_id"],
+            "threadID": call.data["thread_id"],
             "type": mute_type_num,
             "accountSelection": call.data["account_selection"]
         }
@@ -157,7 +169,7 @@ async def async_set_pinned_conversation_service(hass, call, zalo_login):
         pinned_str = str(call.data.get("pinned", "true")).lower()
         pinned = pinned_str == "true" or pinned_str == "1" or pinned_str == "yes"
         conv_type = call.data.get("type", "0")
-        conv_type_num = 1 if conv_type.lower() == "group" else 0
+        conv_type_num = normalize_thread_type(conv_type)
         payload = {
             "accountSelection": call.data["account_selection"],
             "pinned": pinned,
@@ -208,7 +220,8 @@ async def async_add_unread_mark_service(hass, call, zalo_login):
     try:
         payload = {
             "accountSelection": call.data["account_selection"],
-            "threadId": call.data["thread_id"]
+            "threadId": call.data["thread_id"],
+            "type": normalize_thread_type(call.data.get("type", "0")),
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/addUnreadMarkByAccount", json=payload)
@@ -230,7 +243,8 @@ async def async_remove_unread_mark_service(hass, call, zalo_login):
     try:
         payload = {
             "accountSelection": call.data["account_selection"],
-            "threadId": call.data["thread_id"]
+            "threadId": call.data["thread_id"],
+            "type": normalize_thread_type(call.data.get("type", "0")),
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/removeUnreadMarkByAccount", json=payload)
@@ -250,9 +264,33 @@ async def async_delete_chat_service(hass, call, zalo_login):
     """Xóa cuộc trò chuyện."""
     _LOGGER.debug("Dịch vụ async_delete_chat được gọi với: %s", call.data)
     try:
+        raw_last_message = call.data["last_message"]
+        owner_id = raw_last_message.get("ownerId") or raw_last_message.get("uidFrom")
+        cli_msg_id = raw_last_message.get("cliMsgId")
+        global_msg_id = raw_last_message.get("globalMsgId") or raw_last_message.get("msgId")
+        missing = [
+            name
+            for name, value in (
+                ("ownerId/uidFrom", owner_id),
+                ("cliMsgId", cli_msg_id),
+                ("globalMsgId/msgId", global_msg_id),
+            )
+            if value in (None, "")
+        ]
+        if missing:
+            raise ValueError(
+                "last_message thiếu trường bắt buộc: " + ", ".join(missing)
+            )
+
         payload = {
             "accountSelection": call.data["account_selection"],
-            "threadId": call.data["thread_id"]
+            "threadId": call.data["thread_id"],
+            "lastMessage": {
+                "ownerId": str(owner_id),
+                "cliMsgId": str(cli_msg_id),
+                "globalMsgId": str(global_msg_id),
+            },
+            "type": normalize_thread_type(call.data.get("type", "0")),
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/deleteChatByAccount", json=payload)
@@ -319,7 +357,7 @@ async def async_update_auto_delete_chat_service(hass, call, zalo_login):
             "accountSelection": call.data["account_selection"],
             "threadId": call.data["thread_id"],
             "ttl": call.data["ttl"],
-            "type": "group" if msg_type == "1" else "user",
+            "type": normalize_thread_type(msg_type),
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/updateAutoDeleteChatByAccount", json=payload)
@@ -360,12 +398,11 @@ async def async_set_hidden_conversations_service(hass, call, zalo_login):
     """Thiết lập trạng thái ẩn cho cuộc trò chuyện."""
     _LOGGER.debug("Dịch vụ async_set_hidden_conversations được gọi với: %s", call.data)
     try:
-        is_hide_str = str(call.data["hidden"]).lower()
-        is_hide = is_hide_str == "true" or is_hide_str == "1" or is_hide_str == "yes"
         payload = {
             "accountSelection": call.data["account_selection"],
             "threadId": call.data["thread_id"],
-            "isHide": is_hide
+            "hidden": bool(call.data["hidden"]),
+            "type": normalize_thread_type(call.data.get("type", "0")),
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/setHiddenConversationsByAccount", json=payload)
@@ -387,8 +424,7 @@ async def async_update_hidden_convers_pin_service(hass, call, zalo_login):
     try:
         payload = {
             "accountSelection": call.data["account_selection"],
-            "oldPin": call.data["old_pin"],
-            "newPin": call.data["new_pin"]
+            "pin": call.data["pin"],
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/updateHiddenConversPinByAccount", json=payload)
@@ -477,7 +513,7 @@ async def async_add_reaction_service(hass, call, zalo_login):
         except ValueError:
             msg_id = call.data["msg_id"]
             cli_msg_id = call.data["cli_msg_id"]
-        reaction_type = 1 if call.data["type"].lower() == "group" else 0
+        reaction_type = normalize_thread_type(call.data["type"])
         reaction_icon = call.data["icon"].lower()
         reaction_map = {
             "like": "/-strong",
@@ -546,7 +582,7 @@ async def async_delete_message_service(hass, call, zalo_login):
     """Xóa tin nhắn."""
     _LOGGER.debug("Dịch vụ async_delete_message được gọi với: %s", call.data)
     try:
-        message_type = 1 if call.data["type"].lower() == "group" else 0
+        message_type = normalize_thread_type(call.data["type"])
         payload = {
             "accountSelection": call.data["account_selection"],
             "dest": {
@@ -581,17 +617,20 @@ async def async_forward_message_service(hass, call, zalo_login):
     """Chuyển tiếp tin nhắn."""
     _LOGGER.debug("Dịch vụ async_forward_message được gọi với: %s", call.data)
     try:
-        thread_ids = call.data["thread_ids"].split(",")
-        thread_ids = [tid.strip() for tid in thread_ids]
+        thread_ids = [
+            tid.strip()
+            for tid in call.data["thread_ids"].split(",")
+            if tid.strip()
+        ]
+        if not thread_ids:
+            raise ValueError("thread_ids phải chứa ít nhất một ID đích")
         msg_type = call.data.get("type", "0")
-        msg_type_num = 1 if msg_type.lower() == "group" else 0
+        msg_type_num = normalize_thread_type(msg_type)
         payload = {
             "accountSelection": call.data["account_selection"],
-            "params": {
-                "message": call.data["message"],
-                "threadIds": thread_ids
-            },
-            "type": msg_type_num
+            "params": {"message": call.data["message"]},
+            "threadIds": thread_ids,
+            "type": msg_type_num,
         }
         _LOGGER.debug("Gửi payload đến forwardMessageByAccount: %s", payload)
         url = f"{zalo_server}/api/forwardMessageByAccount"
@@ -640,9 +679,8 @@ async def async_send_card_service(hass, call, zalo_login):
         payload = {
             "threadId": call.data["thread_id"],
             "accountSelection": call.data["account_selection"],
-            "options": {
-                "userId": call.data["user_id"]
-            }
+            "options": {"userId": call.data["user_id"]},
+            "type": normalize_thread_type(call.data.get("type", "0")),
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/sendCardByAccount", json=payload)
@@ -673,7 +711,8 @@ async def async_send_link_service(hass, call, zalo_login):
         payload = {
             "threadId": call.data["thread_id"],
             "accountSelection": call.data["account_selection"],
-            "options": options
+            "options": options,
+            "type": normalize_thread_type(call.data.get("type", "0")),
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/sendLinkByAccount", json=payload)

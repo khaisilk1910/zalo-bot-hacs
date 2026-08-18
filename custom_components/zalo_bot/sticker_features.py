@@ -39,13 +39,25 @@ async def async_get_stickers_detail_service(hass, call, zalo_login):
     """Lấy chi tiết sticker."""
     _LOGGER.debug("Dịch vụ async_get_stickers_detail được gọi với: %s", call.data)
     try:
+        raw_sticker_ids = str(call.data["sticker_album"]).strip()
         try:
-            sticker_id = int(call.data["sticker_id"])
-        except ValueError:
-            sticker_id = call.data["sticker_id"]
+            sticker_ids = [
+                int(part.strip())
+                for part in raw_sticker_ids.split(",")
+                if part.strip()
+            ]
+        except ValueError as err:
+            raise ValueError(
+                "sticker_album phải là ID sticker dạng số hoặc nhiều ID phân cách bằng dấu phẩy"
+            ) from err
+        if not sticker_ids:
+            raise ValueError("sticker_album không được để trống")
+        if any(sticker_id <= 0 for sticker_id in sticker_ids):
+            raise ValueError("ID sticker phải là số nguyên dương")
+
         payload = {
             "accountSelection": call.data["account_selection"],
-            "stickerId": sticker_id
+            "stickerAlbum": sticker_ids[0] if len(sticker_ids) == 1 else sticker_ids,
         }
         _LOGGER.debug("Gửi payload đến getStickersDetailByAccount: %s", payload)
         url = f"{zalo_server}/api/getStickersDetailByAccount"

@@ -156,14 +156,14 @@ async def async_change_group_avatar_service(hass, call, zalo_login):
     """Dịch vụ đổi ảnh đại diện nhóm."""
     _LOGGER.debug("Dịch vụ async_change_group_avatar được gọi với: %s", call.data)
     try:
-        image_path = call.data["image_path"] if "image_path" in call.data else call.data["avatar_path"]
+        image_path = call.data["image_path"]
         if image_path.startswith("http"):
             public_url = image_path
         else:
             if not await _async_is_file(hass, image_path):
                 error_msg = f"Không tìm thấy tệp ảnh: {image_path}"
                 await show_result_notification(hass, "đổi ảnh đại diện nhóm", None, error=error_msg)
-                return
+                return {"error": error_msg}
             try:
                 is_local_server = is_local_zalo_server(zalo_server)
                 if is_local_server:
@@ -171,7 +171,7 @@ async def async_change_group_avatar_service(hass, call, zalo_login):
                     if not public_url:
                         error_msg = "Không thể copy ảnh đến thư mục public"
                         await show_result_notification(hass, "đổi ảnh đại diện nhóm", None, error=error_msg)
-                        return
+                        return {"error": error_msg}
                     if public_url.startswith("/local/"):
                         public_url = f"{zalo_server}{public_url.replace('/local', '')}"
                 else:
@@ -183,10 +183,10 @@ async def async_change_group_avatar_service(hass, call, zalo_login):
                 error_msg = f"Lỗi khi xử lý ảnh: {str(e)}"
                 _LOGGER.error(error_msg)
                 await show_result_notification(hass, "đổi ảnh đại diện nhóm", None, error=error_msg)
-                return
+                return {"error": error_msg}
         payload = {
             "groupId": call.data["group_id"],
-            "imagePath": public_url,
+            "avatarSource": public_url,
             "accountSelection": call.data["account_selection"]
         }
         resp = await hass.async_add_executor_job(
@@ -260,7 +260,7 @@ async def async_add_group_deputy_service(hass, call, zalo_login):
     """Dịch vụ thêm phó nhóm."""
     _LOGGER.debug("Dịch vụ async_add_group_deputy được gọi với: %s", call.data)
     try:
-        member_id = call.data["member_id"] if "member_id" in call.data else call.data["user_id"]
+        member_id = call.data["member_id"]
         payload = {
             "accountSelection": call.data["account_selection"],
             "groupId": call.data["group_id"],
@@ -284,7 +284,7 @@ async def async_remove_group_deputy_service(hass, call, zalo_login):
     """Dịch vụ xóa phó nhóm."""
     _LOGGER.debug("Dịch vụ async_remove_group_deputy được gọi với: %s", call.data)
     try:
-        member_id = call.data["member_id"] if "member_id" in call.data else call.data["user_id"]
+        member_id = call.data["member_id"]
         payload = {
             "accountSelection": call.data["account_selection"],
             "groupId": call.data["group_id"],
@@ -308,7 +308,7 @@ async def async_change_group_owner_service(hass, call, zalo_login):
     """Dịch vụ chuyển quyền trưởng nhóm."""
     _LOGGER.debug("Dịch vụ async_change_group_owner được gọi với: %s", call.data)
     try:
-        member_id = call.data["member_id"] if "member_id" in call.data else call.data["user_id"]
+        member_id = call.data["member_id"]
         payload = {
             "accountSelection": call.data["account_selection"],
             "groupId": call.data["group_id"],
@@ -497,7 +497,11 @@ async def async_get_list_board_service(hass, call, zalo_login):
     try:
         payload = {
             "accountSelection": call.data["account_selection"],
-            "groupId": call.data["group_id"]
+            "groupId": call.data["group_id"],
+            "options": {
+                "page": int(call.data.get("page", 1)),
+                "count": int(call.data.get("count", 20)),
+            },
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/getListBoardByAccount", json=payload)
@@ -517,8 +521,9 @@ async def async_create_poll_service(hass, call, zalo_login):
     """Dịch vụ tạo bình chọn."""
     _LOGGER.debug("Dịch vụ async_create_poll được gọi với: %s", call.data)
     try:
-        options_list = call.data["options"].split(",")
-        options_list = [opt.strip() for opt in options_list]
+        options_list = [opt.strip() for opt in call.data["options"].split(",") if opt.strip()]
+        if len(options_list) < 2:
+            raise ValueError("create_poll cần ít nhất 2 lựa chọn không rỗng")
         payload = {
             "groupId": call.data["group_id"],
             "accountSelection": call.data["account_selection"],

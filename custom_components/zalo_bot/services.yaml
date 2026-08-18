@@ -672,15 +672,9 @@ create_reminder:
       required: true
       selector:
         text: null
-    content:
-      description: Nội dung nhắc nhở
-      example: Họp nhóm lúc 10h sáng
-      required: true
-      selector:
-        text: null
     remind_time:
-      description: Thời gian nhắc nhở (timestamp)
-      example: '1632739200000'
+      description: Thời điểm nhắc (Unix timestamp mili-giây; ánh xạ sang options.startTime của zca-js 2.1.2)
+      example: '1787047200000'
       required: true
       selector:
         text: null
@@ -1236,6 +1230,16 @@ add_unread_mark:
       required: true
       selector:
         text: null
+    type:
+      description: 'Loại cuộc trò chuyện: 0=user, 1=group'
+      default: '0'
+      selector:
+        select:
+          options:
+          - label: Cá nhân
+            value: '0'
+          - label: Nhóm
+            value: '1'
     account_selection:
       description: Số điện thoại hoặc ID tài khoản
       example: '+84123456789'
@@ -1251,6 +1255,16 @@ remove_unread_mark:
       required: true
       selector:
         text: null
+    type:
+      description: 'Loại cuộc trò chuyện: 0=user, 1=group'
+      default: '0'
+      selector:
+        select:
+          options:
+          - label: Cá nhân
+            value: '0'
+          - label: Nhóm
+            value: '1'
     account_selection:
       description: Số điện thoại hoặc ID tài khoản
       example: '+84123456789'
@@ -1266,6 +1280,21 @@ delete_chat:
       required: true
       selector:
         text: null
+    last_message:
+      description: Đối tượng tin nhắn cuối; cần ownerId, cliMsgId, globalMsgId. Cũng chấp nhận uidFrom/msgId từ dữ liệu lịch sử chat
+      required: true
+      selector:
+        object: null
+    type:
+      description: 'Loại cuộc trò chuyện: 0=user, 1=group'
+      default: '0'
+      selector:
+        select:
+          options:
+          - label: Cá nhân
+            value: '0'
+          - label: Nhóm
+            value: '1'
     account_selection:
       description: Số điện thoại hoặc ID tài khoản
       example: '+84123456789'
@@ -1353,6 +1382,16 @@ set_hidden_conversations:
       required: true
       selector:
         boolean: null
+    type:
+      description: 'Loại cuộc trò chuyện: 0=user, 1=group'
+      default: '0'
+      selector:
+        select:
+          options:
+          - label: Cá nhân
+            value: '0'
+          - label: Nhóm
+            value: '1'
     account_selection:
       description: Số điện thoại hoặc ID tài khoản
       example: '+84123456789'
@@ -1610,6 +1649,16 @@ send_card:
       required: true
       selector:
         text: null
+    type:
+      description: 'Loại cuộc trò chuyện: 0=user, 1=group'
+      default: '0'
+      selector:
+        select:
+          options:
+          - label: Cá nhân
+            value: '0'
+          - label: Nhóm
+            value: '1'
     account_selection:
       description: Số điện thoại hoặc ID tài khoản
       example: '+84123456789'
@@ -1642,6 +1691,16 @@ send_link:
       default: ''
       selector:
         text: null
+    type:
+      description: 'Loại cuộc trò chuyện: 0=user, 1=group'
+      default: '0'
+      selector:
+        select:
+          options:
+          - label: Cá nhân
+            value: '0'
+          - label: Nhóm
+            value: '1'
     account_selection:
       description: Số điện thoại hoặc ID tài khoản
       example: '+84123456789'
@@ -1664,11 +1723,11 @@ get_stickers:
       selector:
         text: null
 get_stickers_detail:
-  description: Lấy thông tin chi tiết của một bộ sticker
+  description: Lấy chi tiết một hoặc nhiều sticker theo ID
   fields:
     sticker_album:
-      description: ID album sticker
-      example: '22148'
+      description: Một ID sticker hoặc nhiều ID phân cách bằng dấu phẩy
+      example: '22148,22149'
       required: true
       selector:
         text: null
@@ -1800,6 +1859,22 @@ get_list_board:
       required: true
       selector:
         text: null
+    page:
+      description: Trang cần lấy
+      default: 1
+      selector:
+        number:
+          min: 1
+          step: 1
+          mode: box
+    count:
+      description: Số mục trên mỗi trang
+      default: 20
+      selector:
+        number:
+          min: 1
+          step: 1
+          mode: box
     account_selection:
       description: Số điện thoại hoặc ID tài khoản
       example: '+84123456789'
@@ -1889,6 +1964,16 @@ edit_reminder:
       required: true
       selector:
         text: null
+    type:
+      description: 'Loại cuộc trò chuyện: 0=user, 1=group'
+      default: '0'
+      selector:
+        select:
+          options:
+          - label: Cá nhân
+            value: '0'
+          - label: Nhóm
+            value: '1'
     account_selection:
       description: Số điện thoại hoặc ID tài khoản
       example: '+84123456789'
@@ -1919,6 +2004,22 @@ get_list_reminder:
       required: true
       selector:
         text: null
+    page:
+      description: Trang cần lấy
+      default: 1
+      selector:
+        number:
+          min: 1
+          step: 1
+          mode: box
+    count:
+      description: Số nhắc hẹn trên mỗi trang
+      default: 20
+      selector:
+        number:
+          min: 1
+          step: 1
+          mode: box
     account_selection:
       description: Số điện thoại hoặc ID tài khoản
       example: '+84123456789'
@@ -2116,6 +2217,16 @@ send_typing_event:
       required: true
       selector:
         text: null
+    type:
+      description: 'Loại cuộc trò chuyện: 0=user, 1=group'
+      default: '0'
+      selector:
+        select:
+          options:
+          - label: Cá nhân
+            value: '0'
+          - label: Nhóm
+            value: '1'
     account_selection:
       description: Số điện thoại hoặc ID tài khoản gửi
       example: '+84123456789'

@@ -191,7 +191,9 @@ SERVICE_UNDO_MESSAGE_SCHEMA = vol.Schema({
 
 SERVICE_CREATE_REMINDER_SCHEMA = vol.Schema({
     vol.Required("title"): cv.string,
-    vol.Required("content"): cv.string,
+    # Legacy field kept schema-compatible with existing automations. zca-js 2.1.2
+    # only exposes a single reminder title, so this field is no longer sent.
+    vol.Optional("content"): cv.string,
     vol.Required("remind_time"): cv.string,
     vol.Required("thread_id"): cv.string,
     vol.Required("account_selection"): cv.string,
@@ -327,12 +329,14 @@ SERVICE_UPDATE_SETTINGS_SCHEMA = vol.Schema({
 SERVICE_SET_MUTE_SCHEMA = vol.Schema({
     vol.Required("thread_id"): cv.string,
     vol.Required("duration"): cv.string,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 
 SERVICE_SET_PINNED_CONVERSATION_SCHEMA = vol.Schema({
     vol.Required("thread_id"): cv.string,
     vol.Required("pinned"): cv.boolean,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 
@@ -343,16 +347,20 @@ SERVICE_GET_UNREAD_MARK_SCHEMA = vol.Schema({
 
 SERVICE_ADD_UNREAD_MARK_SCHEMA = vol.Schema({
     vol.Required("thread_id"): cv.string,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 
 SERVICE_REMOVE_UNREAD_MARK_SCHEMA = vol.Schema({
     vol.Required("thread_id"): cv.string,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 
 SERVICE_DELETE_CHAT_SCHEMA = vol.Schema({
     vol.Required("thread_id"): cv.string,
+    vol.Required("last_message"): dict,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 
@@ -378,6 +386,7 @@ SERVICE_GET_HIDDEN_CONVERSATIONS_SCHEMA = vol.Schema({
 SERVICE_SET_HIDDEN_CONVERSATIONS_SCHEMA = vol.Schema({
     vol.Required("thread_id"): cv.string,
     vol.Required("hidden"): cv.boolean,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 
@@ -420,6 +429,7 @@ SERVICE_DELETE_MESSAGE_SCHEMA = vol.Schema({
 SERVICE_FORWARD_MESSAGE_SCHEMA = vol.Schema({
     vol.Required("message"): cv.string,
     vol.Required("thread_ids"): cv.string,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 
@@ -431,6 +441,7 @@ SERVICE_PARSE_LINK_SCHEMA = vol.Schema({
 SERVICE_SEND_CARD_SCHEMA = vol.Schema({
     vol.Required("thread_id"): cv.string,
     vol.Required("user_id"): cv.string,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 
@@ -439,6 +450,7 @@ SERVICE_SEND_LINK_SCHEMA = vol.Schema({
     vol.Required("link"): cv.string,
     vol.Optional("message", default=""): cv.string,
     vol.Optional("thumbnail", default=""): cv.string,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 
@@ -479,6 +491,8 @@ SERVICE_EDIT_NOTE_GROUP_SCHEMA = vol.Schema({
 
 SERVICE_GET_LIST_BOARD_SCHEMA = vol.Schema({
     vol.Required("group_id"): cv.string,
+    vol.Optional("page", default=1): cv.positive_int,
+    vol.Optional("count", default=20): cv.positive_int,
     vol.Required("account_selection"): cv.string,
 })
 
@@ -504,6 +518,7 @@ SERVICE_EDIT_REMINDER_SCHEMA = vol.Schema({
     vol.Required("thread_id"): cv.string,
     vol.Required("topic_id"): cv.string,
     vol.Required("title"): cv.string,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 
@@ -514,6 +529,9 @@ SERVICE_GET_REMINDER_SCHEMA = vol.Schema({
 
 SERVICE_GET_LIST_REMINDER_SCHEMA = vol.Schema({
     vol.Required("thread_id"): cv.string,
+    vol.Optional("page", default=1): cv.positive_int,
+    vol.Optional("count", default=20): cv.positive_int,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 
@@ -561,6 +579,8 @@ SERVICE_CHANGE_ACCOUNT_AVATAR_SCHEMA = vol.Schema({
 
 SERVICE_GET_AVATAR_LIST_SCHEMA = vol.Schema({
     vol.Required("account_selection"): cv.string,
+    vol.Optional("count"): cv.positive_int,
+    vol.Optional("page"): cv.positive_int,
 })
 
 SERVICE_LAST_ONLINE_SCHEMA = vol.Schema({
@@ -570,6 +590,7 @@ SERVICE_LAST_ONLINE_SCHEMA = vol.Schema({
 
 SERVICE_SEND_TYPING_EVENT_SCHEMA = vol.Schema({
     vol.Required("thread_id"): cv.string,
+    vol.Optional("type", default="0"): cv.string,
     vol.Required("account_selection"): cv.string,
 })
 

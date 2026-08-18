@@ -1,10 +1,36 @@
 # Changelog
 
 ## 2026.8.18.1
-- Sửa tài liệu cài HACS để nêu rõ repository GitHub phải tồn tại và ở chế độ Public; lỗi GitHub API 404 không thể được xử lý từ phía Home Assistant.
-- Đồng bộ `DeviceInfo.sw_version` tự động từ `manifest.json`, tránh hiển thị phiên bản cũ sau mỗi release.
-- Điều chỉnh workflow HACS theo mẫu chính thức hiện tại và giữ quyền đọc mã nguồn cần thiết cho Hassfest.
-- Giữ nguyên toàn bộ 97 action/service và API behavior của integration.
+
+### Zalo Server / zca-js 2.1.2 compatibility
+- Rà soát trực tiếp toàn bộ endpoint action đang dùng với `zalo-bot-server-zcajs-2.1.2-reviewed`.
+- Sửa `change_group_avatar`: `imagePath` -> `avatarSource`.
+- Sửa `forward_message` theo breaking change zca-js 2.x: `threadIds` chuyển ra cấp request, tách khỏi `params`.
+- Sửa `get_stickers_detail`: dùng `stickerAlbum` và chuyển một/nhiều ID từ UI sang `number`/`number[]`.
+- Sửa `last_online`: `userId` -> `uid`.
+- Sửa `set_mute`: `threadId` -> `threadID`, đồng thời đổi `action` sang enum số đúng zca-js 2.1.2 (`MUTE=1`, `UNMUTE=3`).
+- Bổ sung/chuẩn hóa `type` cho unread mark, hidden conversation, card, link, voice, typing, reminder và các action conversation liên quan.
+- Sửa `create_reminder` dùng `options.startTime` dạng timestamp mili-giây thay cho payload cũ `content/remindTime`; vẫn chấp nhận field `content` cũ trong schema để automation cũ không bị reject.
+- Sửa `get_list_board` và `get_list_reminder` luôn gửi `options.page/count` (mặc định 1/20), tránh lỗi `options` bị `undefined` trong zca-js 2.1.2.
+- Lọc option rỗng và yêu cầu tối thiểu 2 lựa chọn khi `create_poll`.
+- Sửa `delete_chat`: bắt buộc `last_message`, chuẩn hóa `ownerId`, `cliMsgId`, `globalMsgId`; chấp nhận alias `uidFrom`/`msgId` từ dữ liệu lịch sử.
+- Sửa PIN hidden conversation dùng đúng trường `pin`; bỏ lệch schema/handler `old_pin`/`new_pin`.
+- Chuẩn hóa thread type để chấp nhận tương thích cả `0/1` và `user/group`.
+
+### Home Assistant reliability
+- Không chờ network refresh của binary sensor trong `async_setup_entry`; refresh đầu chạy bằng config-entry background task và tự hủy khi unload.
+- Giữ HTTP blocking I/O trong executor và tái sử dụng pooled authenticated session để không chặn event loop.
+- Với `SupportsResponse.OPTIONAL`, chỉ trả response khi action được gọi với response data; vẫn chuyển lỗi API thành `HomeAssistantError`.
+- HTTP 4xx/5xx từ Zalo Server và lỗi xử lý file/ảnh/video local được chuyển thành action failure thay vì có thể bị hiểu nhầm là thành công.
+- Đóng `requests.Session` qua executor khi unload để tránh thao tác blocking trong event loop.
+- Sửa schema `get_avatar_list` để cho phép đúng `count`/`page` đã có trong UI service.
+- Đồng bộ field của `services.yaml` với schema và translations EN/VI.
+
+### Verification
+- Python compile toàn bộ custom component: pass.
+- Parse `services.yaml`, `manifest.json`, `hacs.json`, translations EN/VI: pass.
+- Đối chiếu đăng ký service/schema với `services.yaml`: 97/97 khớp field.
+- Đối chiếu endpoint HACS với server reviewed: toàn bộ endpoint được integration sử dụng đều có route tương ứng (bao gồm route động account/webhook).
 
 ## 2026.8.17
 

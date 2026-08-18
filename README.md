@@ -2,7 +2,7 @@
 
 Custom integration cho Home Assistant kết nối tới **Zalo Bot Server** để gửi/nhận thao tác Zalo trong automation, script và Developer Tools.
 
-> Phiên bản tài liệu này dành cho **Zalo Bot HACS v2026.8.18.1** và được rà soát tương thích với **Zalo Bot Server v1.0.6**.
+> Phiên bản tài liệu này dành cho **Zalo Bot HACS v2026.8.18.1** và được rà soát trực tiếp với **zalo-bot-server-zcajs-2.1.2-reviewed** (server package 1.1.0, `zca-js` 2.1.2).
 
 ## Tính năng
 
@@ -10,7 +10,7 @@ Custom integration cho Home Assistant kết nối tới **Zalo Bot Server** đ�
 - Kiểm tra kết nối và tài khoản quản trị Zalo Server trước khi lưu cấu hình.
 - Giữ HTTP session đã xác thực để giảm số lần login và giảm độ trễ mỗi action.
 - Tự login lại một lần khi session server hết hạn.
-- Binary sensor trạng thái Zalo Server và trạng thái đăng nhập Zalo.
+- Binary sensor trạng thái Zalo Server và trạng thái đăng nhập Zalo; lần refresh kết nối đầu chạy nền để không giữ quá trình setup/startup của Home Assistant.
 - Button lấy QR đăng nhập Zalo.
 - Switch bật/tắt notification và Markdown.
 - Select màu Markdown.
@@ -25,27 +25,18 @@ Custom integration cho Home Assistant kết nối tới **Zalo Bot Server** đ�
 
 - Home Assistant **2024.3.0** trở lên.
 - HACS nếu muốn cài/cập nhật integration thuận tiện.
-- Zalo Bot Server **v1.0.6** trở lên đang chạy và Home Assistant truy cập được.
+- Khuyến nghị dùng đúng **zalo-bot-server-zcajs-2.1.2-reviewed** (server package 1.1.0, `zca-js` 2.1.2) hoặc bản server mới hơn có cùng API contract.
 - Username/password quản trị của Zalo Server.
 
 > README của integration này không chứa cấu hình Docker/Stack. Cách triển khai server và volume được tài liệu tại repo **zalo-bot-server**.
 
+### Ghi chú tương thích với server zca-js 2.1.2
+
+Bản `2026.8.18.1` đồng bộ payload/action với server reviewed, gồm các thay đổi quan trọng: `forward_message` gửi `threadIds` ở cấp request, `delete_chat` gửi `lastMessage`, `change_group_avatar` dùng `avatarSource`, `get_stickers_detail` dùng `stickerAlbum`, `last_online` dùng `uid`, `set_mute` dùng `threadID` + enum `action` số của zca-js 2.1.2, reminder dùng `startTime`, các action list board/reminder luôn gửi `options.page/count`, và các action liên quan conversation gửi `type` nhất quán (`0/user`, `1/group`).
+
+`delete_chat` yêu cầu `last_message` lấy từ tin nhắn cuối của lịch sử chat. Integration chấp nhận cả bộ trường chuẩn `ownerId`, `cliMsgId`, `globalMsgId` và alias thường có trong lịch sử `uidFrom`, `cliMsgId`, `msgId`.
+
 ## Cài đặt qua HACS
-
-> **Quan trọng:** HACS chỉ cài được repository GitHub **public**. Trước khi thêm vào HACS, hãy bảo đảm repository `khaisilk1910/zalo-bot-hacs` đã được tạo, đang để **Public**, có branch mặc định chứa trực tiếp `hacs.json`, `README.md` và thư mục `custom_components/zalo_bot`. Nếu URL GitHub/API trả `404`, HACS cũng sẽ báo lỗi và chưa thể cài đặt.
-
-### 0. Chuẩn bị repository GitHub
-
-Trên GitHub, tạo repository chính xác với tên `zalo-bot-hacs` dưới tài khoản `khaisilk1910`, đặt **Public**, bật **Issues**, thêm mô tả repository và ít nhất một topic. Upload **nội dung bên trong** gói release lên root repository; không đặt toàn bộ dự án vào thêm một thư mục cha. Branch mặc định nên là `main`.
-
-Sau khi push, hai URL sau phải mở được mà không cần đăng nhập:
-
-```text
-https://github.com/khaisilk1910/zalo-bot-hacs
-https://api.github.com/repos/khaisilk1910/zalo-bot-hacs
-```
-
-Chỉ tiếp tục add vào HACS khi GitHub API trả metadata repository thay vì `404 Not Found`.
 
 ### 1. Thêm Custom Repository
 
@@ -508,8 +499,8 @@ git push origin main
 Sau đó tạo tag/release mới, ví dụ:
 
 ```bash
-git tag -a v2026.8.18.1 -m "Zalo Bot HACS v2026.8.18.1"
-git push origin v2026.8.18.1
+git tag -a v2026.8.18 -m "Zalo Bot HACS v2026.8.18"
+git push origin v2026.8.18
 ```
 
 Publish GitHub Release tương ứng để HACS nhận phiên bản mới.

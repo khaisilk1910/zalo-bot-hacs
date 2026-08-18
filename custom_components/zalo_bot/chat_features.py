@@ -4,6 +4,7 @@ import os
 from .const import DOMAIN
 from .file_handling import serve_file_temporarily, serve_files_temporarily, copy_to_public, get_video_duration_ms, is_local_zalo_server
 from .notification import show_result_notification
+from .helpers import normalize_thread_type
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -340,7 +341,7 @@ async def async_send_message_service(hass, call, zalo_login):
             "message": msg_obj,
             "threadId": call.data["thread_id"],
             "accountSelection": call.data["account_selection"],
-            "type": 1 if msg_type == "1" else 0
+            "type": normalize_thread_type(msg_type)
         }
         if "ttl" in call.data:
             payload["ttl"] = call.data["ttl"]
@@ -377,7 +378,7 @@ async def async_send_file_service(hass, call, zalo_login):
             if not await _async_is_file(hass, file_path):
                 error_msg = f"Không tìm thấy tệp: {file_path}"
                 await show_result_notification(hass, "gửi file", None, error=error_msg)
-                return
+                return {"error": error_msg}
             try:
                 is_local_server = is_local_zalo_server(zalo_server)
                 if is_local_server:
@@ -385,7 +386,7 @@ async def async_send_file_service(hass, call, zalo_login):
                     if not public_url:
                         error_msg = "Không thể copy tệp đến thư mục public"
                         await show_result_notification(hass, "gửi file", None, error=error_msg)
-                        return
+                        return {"error": error_msg}
                     if public_url.startswith("/local/"):
                         filename = os.path.basename(file_path)
                         public_url = f"{zalo_server}/{filename}"
@@ -398,16 +399,17 @@ async def async_send_file_service(hass, call, zalo_login):
                 error_msg = f"Lỗi khi xử lý tệp: {str(e)}"
                 _LOGGER.error(error_msg)
                 await show_result_notification(hass, "gửi file", None, error=error_msg)
-                return
+                return {"error": error_msg}
         if not public_url:
-            await show_result_notification(hass, "gửi file", None, error="Không thể tạo URL công khai cho tệp.")
-            return
+            error_msg = "Không thể tạo URL công khai cho tệp."
+            await show_result_notification(hass, "gửi file", None, error=error_msg)
+            return {"error": error_msg}
         payload = {
             "fileUrl": public_url,
             "message": call.data.get("message", ""),
             "threadId": call.data["thread_id"],
             "accountSelection": call.data["account_selection"],
-            "type": "group" if msg_type == "1" else "user",
+            "type": normalize_thread_type(msg_type),
         }
         if "ttl" in call.data:
             payload["ttl"] = call.data["ttl"]
@@ -440,7 +442,7 @@ async def async_send_image_service(hass, call, zalo_login):
             if not await _async_is_file(hass, image_path):
                 error_msg = f"Không tìm thấy tệp ảnh: {image_path}"
                 await show_result_notification(hass, "gửi ảnh", None, error=error_msg)
-                return
+                return {"error": error_msg}
             try:
                 is_local_server = is_local_zalo_server(zalo_server)
                 if is_local_server:
@@ -448,7 +450,7 @@ async def async_send_image_service(hass, call, zalo_login):
                     if not public_url:
                         error_msg = "Không thể copy ảnh đến thư mục public"
                         await show_result_notification(hass, "gửi ảnh", None, error=error_msg)
-                        return
+                        return {"error": error_msg}
                     if public_url.startswith("/local/"):
                         filename = os.path.basename(image_path)
                         public_url = f"{zalo_server}/{filename}"
@@ -461,12 +463,12 @@ async def async_send_image_service(hass, call, zalo_login):
                 error_msg = f"Lỗi khi xử lý ảnh: {str(e)}"
                 _LOGGER.error(error_msg)
                 await show_result_notification(hass, "gửi ảnh", None, error=error_msg)
-                return
+                return {"error": error_msg}
         payload = {
             "imagePath": public_url,
             "threadId": call.data["thread_id"],
             "accountSelection": call.data["account_selection"],
-            "type": "group" if msg_type == "1" else "user",
+            "type": normalize_thread_type(msg_type),
             "message": call.data.get("message", ""),
         }
         if "ttl" in call.data:
@@ -500,7 +502,7 @@ async def async_send_video_service(hass, call, zalo_login):
             if not await _async_is_file(hass, video_path):
                 error_msg = f"Không tìm thấy tệp video: {video_path}"
                 await show_result_notification(hass, "gửi video", None, error=error_msg)
-                return
+                return {"error": error_msg}
             try:
                 _LOGGER.debug(f"Sử dụng máy chủ HTTP tạm thời để phục vụ tệp video: {video_path}")
                 public_url = await hass.async_add_executor_job(
@@ -510,10 +512,11 @@ async def async_send_video_service(hass, call, zalo_login):
                 error_msg = f"Lỗi khi xử lý tệp video: {str(e)}"
                 _LOGGER.error(error_msg)
                 await show_result_notification(hass, "gửi video", None, error=error_msg)
-                return
+                return {"error": error_msg}
         if not public_url:
-            await show_result_notification(hass, "gửi video", None, error="Không thể tạo URL công khai cho video.")
-            return
+            error_msg = "Không thể tạo URL công khai cho video."
+            await show_result_notification(hass, "gửi video", None, error=error_msg)
+            return {"error": error_msg}
         thumbnail_url = call.data.get("thumbnail_url", public_url)
         if thumbnail_url and not (thumbnail_url.startswith("http://") or thumbnail_url.startswith("https://")):
 
@@ -546,7 +549,7 @@ async def async_send_video_service(hass, call, zalo_login):
             "width": int(call.data.get("width", 1280)),
             "height": int(call.data.get("height", 720)),
         }
-        thread_type_num = 1 if msg_type == "1" else 0
+        thread_type_num = normalize_thread_type(msg_type)
         payload = {
             "threadId": str(call.data["thread_id"]),
             "accountSelection": str(call.data["account_selection"]),
@@ -598,7 +601,7 @@ async def async_send_sticker_service(hass, call, zalo_login):
             "accountSelection": call.data["account_selection"],
             "threadId": call.data["thread_id"],
             "sticker": sticker,
-            "type": 1 if msg_type == "1" else 0
+            "type": normalize_thread_type(msg_type)
         }
         _LOGGER.debug("Gửi payload đến sendStickerByAccount: %s", payload)
         resp = await hass.async_add_executor_job(
@@ -631,9 +634,8 @@ async def async_send_voice_service(hass, call, zalo_login):
         payload = {
             "threadId": call.data["thread_id"],
             "accountSelection": call.data["account_selection"],
-            "options": {
-                "voiceUrl": voice_url
-            }
+            "options": {"voiceUrl": voice_url},
+            "type": normalize_thread_type(call.data.get("type", "0")),
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/sendVoiceByAccount", json=payload)
@@ -655,7 +657,8 @@ async def async_send_typing_event_service(hass, call, zalo_login):
     try:
         payload = {
             "threadId": call.data["thread_id"],
-            "accountSelection": call.data["account_selection"]
+            "accountSelection": call.data["account_selection"],
+            "type": normalize_thread_type(call.data.get("type", "0")),
         }
         resp = await hass.async_add_executor_job(
             lambda: session.post(f"{zalo_server}/api/sendTypingEventByAccount", json=payload)
@@ -683,7 +686,7 @@ async def async_send_image_to_user_service(hass, call, zalo_login):
             if not await _async_is_file(hass, image_path):
                 error_msg = f"Không tìm thấy tệp ảnh: {image_path}"
                 await show_result_notification(hass, "gửi ảnh cho người dùng", None, error=error_msg)
-                return
+                return {"error": error_msg}
             try:
                 is_local_server = is_local_zalo_server(zalo_server)
                 if is_local_server:
@@ -691,7 +694,7 @@ async def async_send_image_to_user_service(hass, call, zalo_login):
                     if not public_url:
                         error_msg = "Không thể copy ảnh đến thư mục public"
                         await show_result_notification(hass, "gửi ảnh cho người dùng", None, error=error_msg)
-                        return
+                        return {"error": error_msg}
                     if public_url.startswith("/local/"):
                         public_url = f"{zalo_server}{public_url.replace('/local', '')}"
                 else:
@@ -703,7 +706,7 @@ async def async_send_image_to_user_service(hass, call, zalo_login):
                 error_msg = f"Lỗi khi xử lý ảnh: {str(e)}"
                 _LOGGER.error(error_msg)
                 await show_result_notification(hass, "gửi ảnh cho người dùng", None, error=error_msg)
-                return
+                return {"error": error_msg}
         payload = {
             "imagePath": public_url,
             "threadId": call.data["thread_id"],
@@ -737,7 +740,7 @@ async def async_send_image_to_group_service(hass, call, zalo_login):
             if not await _async_is_file(hass, image_path):
                 error_msg = f"Không tìm thấy tệp ảnh: {image_path}"
                 await show_result_notification(hass, "gửi ảnh cho nhóm", None, error=error_msg)
-                return
+                return {"error": error_msg}
             try:
                 is_local_server = is_local_zalo_server(zalo_server)
                 if is_local_server:
@@ -745,7 +748,7 @@ async def async_send_image_to_group_service(hass, call, zalo_login):
                     if not public_url:
                         error_msg = "Không thể copy ảnh đến thư mục public"
                         await show_result_notification(hass, "gửi ảnh cho nhóm", None, error=error_msg)
-                        return
+                        return {"error": error_msg}
                     if public_url.startswith("/local/"):
                         public_url = f"{zalo_server}{public_url.replace('/local', '')}"
                 else:
@@ -757,7 +760,7 @@ async def async_send_image_to_group_service(hass, call, zalo_login):
                 error_msg = f"Lỗi khi xử lý ảnh: {str(e)}"
                 _LOGGER.error(error_msg)
                 await show_result_notification(hass, "gửi ảnh cho nhóm", None, error=error_msg)
-                return
+                return {"error": error_msg}
         payload = {
             "imagePath": public_url,
             "threadId": call.data["thread_id"],

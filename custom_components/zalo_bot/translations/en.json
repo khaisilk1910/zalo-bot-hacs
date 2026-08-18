@@ -533,13 +533,9 @@
           "name": "Title",
           "description": "Value for title."
         },
-        "content": {
-          "name": "Content",
-          "description": "Value for content."
-        },
         "remind_time": {
-          "name": "Remind Time",
-          "description": "Value for remind time."
+          "name": "Reminder time",
+          "description": "Unix timestamp in milliseconds, mapped to zca-js 2.1.2 options.startTime."
         },
         "thread_id": {
           "name": "Thread ID",
@@ -986,6 +982,10 @@
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Conversation type",
+          "description": "0/user for a direct user conversation; 1/group for a group conversation."
         }
       }
     },
@@ -1000,6 +1000,10 @@
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Conversation type",
+          "description": "0/user for a direct user conversation; 1/group for a group conversation."
         }
       }
     },
@@ -1014,6 +1018,14 @@
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
+        },
+        "last_message": {
+          "name": "Last message",
+          "description": "Last-message object with ownerId, cliMsgId and globalMsgId. uidFrom/msgId aliases from chat history are also accepted."
+        },
+        "type": {
+          "name": "Conversation type",
+          "description": "0/user for a direct user conversation; 1/group for a group conversation."
         }
       }
     },
@@ -1084,6 +1096,10 @@
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Conversation type",
+          "description": "0/user for a direct user conversation; 1/group for a group conversation."
         }
       }
     },
@@ -1246,6 +1262,10 @@
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Conversation type",
+          "description": "0/user for a direct user conversation; 1/group for a group conversation."
         }
       }
     },
@@ -1272,6 +1292,10 @@
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Conversation type",
+          "description": "0/user for a direct user conversation; 1/group for a group conversation."
         }
       }
     },
@@ -1290,12 +1314,12 @@
       }
     },
     "get_stickers_detail": {
-      "name": "Get Stickers Detail",
-      "description": "Run the Zalo Bot action “Get Stickers Detail” through Zalo Server.",
+      "name": "Get Sticker Details",
+      "description": "Get details for one or more stickers by sticker ID.",
       "fields": {
         "sticker_album": {
-          "name": "Sticker Album",
-          "description": "Value for sticker album."
+          "name": "Sticker IDs",
+          "description": "One numeric sticker ID or multiple IDs separated by commas."
         },
         "account_selection": {
           "name": "Zalo account",
@@ -1393,6 +1417,14 @@
           "name": "Group Id",
           "description": "Value for group id."
         },
+        "page": {
+          "name": "Page",
+          "description": "Page number to retrieve."
+        },
+        "count": {
+          "name": "Count",
+          "description": "Number of board items per page."
+        },
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
@@ -1472,6 +1504,10 @@
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Conversation type",
+          "description": "0/user for a direct user conversation; 1/group for a group conversation."
         }
       }
     },
@@ -1496,6 +1532,14 @@
         "thread_id": {
           "name": "Thread ID",
           "description": "Value for thread id."
+        },
+        "page": {
+          "name": "Page",
+          "description": "Page number to retrieve."
+        },
+        "count": {
+          "name": "Count",
+          "description": "Number of reminders per page."
         },
         "account_selection": {
           "name": "Zalo account",
@@ -1670,6 +1714,10 @@
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
+        },
+        "type": {
+          "name": "Conversation type",
+          "description": "0/user for a direct user conversation; 1/group for a group conversation."
         }
       }
     },

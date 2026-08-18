@@ -34,14 +34,20 @@ async def async_setup_entry(
         config.get(CONF_USERNAME),
         config.get(CONF_PASSWORD),
     )
-    await coordinator.async_config_entry_first_refresh()
     entry.async_on_unload(coordinator.async_close)
     async_add_entities(
         [
             ZaloLoginBinarySensor(coordinator, entry),
             ZaloServerBinarySensor(coordinator, entry),
-        ],
-        True,
+        ]
+    )
+
+    # Do not make Home Assistant startup wait for Zalo Server/network I/O.
+    # The config-entry-owned task is cancelled automatically on unload.
+    entry.async_create_background_task(
+        hass,
+        coordinator.async_refresh(),
+        "Zalo Bot initial connectivity refresh",
     )
 
 
@@ -94,14 +100,14 @@ class ZaloLoginCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             return False
 
     async def _async_server_health(self) -> bool:
-        """Use the cheap v1.0.6 health endpoint, with a compatibility fallback."""
+        """Use the lightweight health endpoint, with a legacy compatibility fallback."""
         try:
             async with self.session.get(f"{self.zalo_server}/api/health") as resp:
                 if resp.status == 200:
                     return True
                 if resp.status != 404:
                     return False
-            # v1.0.5 and older do not expose /api/health.
+            # Older Zalo Server builds may not expose /api/health.
             async with self.session.get(self.zalo_server) as resp:
                 return resp.status < 500
         except (aiohttp.ClientError, TimeoutError):

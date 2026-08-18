@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-import json
 import logging
 import os
 import threading
 import time
-from collections.abc import Callable
-from pathlib import Path
-from typing import Any
 from urllib.parse import urlsplit
+from collections.abc import Callable
+from typing import Any
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -147,19 +145,6 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 
-def _read_integration_version() -> str:
-    """Read the integration version from manifest.json to avoid stale hard-coded values."""
-    try:
-        manifest_path = Path(__file__).with_name("manifest.json")
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        return str(manifest.get("version") or "unknown")
-    except (OSError, ValueError, TypeError):
-        return "unknown"
-
-
-_INTEGRATION_VERSION = _read_integration_version()
-
-
 class TimeoutSession(requests.Session):
     """Persistent authenticated HTTP session for Zalo Server.
 
@@ -233,6 +218,7 @@ class TimeoutSession(requests.Session):
             response.close()
             self.authenticate(force=True)
             response = super().request(method, url, **kwargs)
+        response.raise_for_status()
         return response
 
 
@@ -353,7 +339,7 @@ def get_device_info() -> DeviceInfo:
         name="Zalo Bot",
         manufacturer="Smarthome Black",
         model="Zalo Bot",
-        sw_version=_INTEGRATION_VERSION,
+        sw_version="2026.8.18.1",
     )
 
 
@@ -392,7 +378,7 @@ def _make_service_handler(
                 raise HomeAssistantError(
                     str(result.get("message") or "Zalo Server báo thao tác thất bại")
                 )
-        return result
+        return result if call.return_response else None
 
     return _handle
 
@@ -485,7 +471,7 @@ async def async_unload_entry(hass: HomeAssistant, entry) -> bool:
 
         global session, zalo_server, _admin_user, _admin_pass
         if session is not None:
-            session.close()
+            await hass.async_add_executor_job(session.close)
         session = None
         zalo_server = None
         _admin_user = None

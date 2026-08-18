@@ -533,13 +533,9 @@
           "name": "Title",
           "description": "Tiêu đề nhắc nhở"
         },
-        "content": {
-          "name": "Content",
-          "description": "Nội dung nhắc nhở"
-        },
         "remind_time": {
-          "name": "Remind Time",
-          "description": "Thời gian nhắc nhở (timestamp)"
+          "name": "Thời điểm nhắc",
+          "description": "Unix timestamp mili-giây, ánh xạ sang options.startTime của zca-js 2.1.2."
         },
         "thread_id": {
           "name": "Thread ID",
@@ -986,6 +982,10 @@
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại cuộc trò chuyện",
+          "description": "0/user cho trò chuyện cá nhân; 1/group cho trò chuyện nhóm."
         }
       }
     },
@@ -1000,6 +1000,10 @@
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại cuộc trò chuyện",
+          "description": "0/user cho trò chuyện cá nhân; 1/group cho trò chuyện nhóm."
         }
       }
     },
@@ -1014,6 +1018,14 @@
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "last_message": {
+          "name": "Tin nhắn cuối",
+          "description": "Object tin nhắn cuối gồm ownerId, cliMsgId và globalMsgId. Cũng chấp nhận uidFrom/msgId từ lịch sử chat."
+        },
+        "type": {
+          "name": "Loại cuộc trò chuyện",
+          "description": "0/user cho trò chuyện cá nhân; 1/group cho trò chuyện nhóm."
         }
       }
     },
@@ -1084,6 +1096,10 @@
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại cuộc trò chuyện",
+          "description": "0/user cho trò chuyện cá nhân; 1/group cho trò chuyện nhóm."
         }
       }
     },
@@ -1246,6 +1262,10 @@
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại cuộc trò chuyện",
+          "description": "0/user cho trò chuyện cá nhân; 1/group cho trò chuyện nhóm."
         }
       }
     },
@@ -1272,6 +1292,10 @@
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại cuộc trò chuyện",
+          "description": "0/user cho trò chuyện cá nhân; 1/group cho trò chuyện nhóm."
         }
       }
     },
@@ -1290,12 +1314,12 @@
       }
     },
     "get_stickers_detail": {
-      "name": "Lấy thông tin chi tiết của một bộ sticker",
-      "description": "Lấy thông tin chi tiết của một bộ sticker",
+      "name": "Lấy chi tiết sticker",
+      "description": "Lấy chi tiết một hoặc nhiều sticker theo ID.",
       "fields": {
         "sticker_album": {
-          "name": "Sticker Album",
-          "description": "ID album sticker"
+          "name": "ID sticker",
+          "description": "Một ID sticker dạng số hoặc nhiều ID phân cách bằng dấu phẩy."
         },
         "account_selection": {
           "name": "Tài khoản Zalo",
@@ -1393,6 +1417,14 @@
           "name": "Group ID",
           "description": "ID của nhóm"
         },
+        "page": {
+          "name": "Trang",
+          "description": "Số trang cần lấy."
+        },
+        "count": {
+          "name": "Số lượng",
+          "description": "Số mục bảng tin trên mỗi trang."
+        },
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số điện thoại hoặc ID tài khoản"
@@ -1472,6 +1504,10 @@
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "type": {
+          "name": "Loại cuộc trò chuyện",
+          "description": "0/user cho trò chuyện cá nhân; 1/group cho trò chuyện nhóm."
         }
       }
     },
@@ -1496,6 +1532,14 @@
         "thread_id": {
           "name": "Thread ID",
           "description": "ID cuộc trò chuyện"
+        },
+        "page": {
+          "name": "Trang",
+          "description": "Số trang cần lấy."
+        },
+        "count": {
+          "name": "Số lượng",
+          "description": "Số nhắc hẹn trên mỗi trang."
         },
         "account_selection": {
           "name": "Tài khoản Zalo",
@@ -1670,6 +1714,10 @@
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số điện thoại hoặc ID tài khoản gửi"
+        },
+        "type": {
+          "name": "Loại cuộc trò chuyện",
+          "description": "0/user cho trò chuyện cá nhân; 1/group cho trò chuyện nhóm."
         }
       }
     },

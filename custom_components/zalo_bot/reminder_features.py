@@ -1,6 +1,7 @@
 """Các tính năng liên quan đến reminder (nhắc nhở) cho Zalo Bot."""
 import logging
 from .notification import show_result_notification
+from .helpers import normalize_thread_type
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -20,6 +21,7 @@ async def async_edit_reminder_service(hass, call, zalo_login):
         payload = {
             "threadId": call.data["thread_id"],
             "accountSelection": call.data["account_selection"],
+            "type": normalize_thread_type(call.data.get("type", "0")),
             "options": {
                 "topicId": call.data["topic_id"],
                 "title": call.data["title"]
@@ -66,14 +68,16 @@ async def async_get_list_reminder_service(hass, call, zalo_login):
     _LOGGER.debug("Dịch vụ async_get_list_reminder được gọi với: %s", call.data)
     try:
         reminder_type = call.data.get("type", "0")
-        reminder_type_num = 1 if reminder_type.lower() == "group" else 0
+        reminder_type_num = normalize_thread_type(reminder_type)
         payload = {
             "accountSelection": call.data["account_selection"],
             "threadId": call.data["thread_id"],
-            "type": reminder_type_num
+            "type": reminder_type_num,
+            "options": {
+                "page": int(call.data.get("page", 1)),
+                "count": int(call.data.get("count", 20)),
+            },
         }
-        if "options" in call.data:
-            payload["options"] = call.data["options"]
         _LOGGER.debug("Gửi payload đến getListReminderByAccount: %s", payload)
         url = f"{zalo_server}/api/getListReminderByAccount"
         _LOGGER.debug("URL đầy đủ: %s", url)

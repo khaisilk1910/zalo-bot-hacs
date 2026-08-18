@@ -371,7 +371,7 @@ async def async_last_online_service(hass, call, zalo_login):
     try:
         payload = {
             "accountSelection": call.data["account_selection"],
-            "userId": call.data["user_id"] 
+            "uid": call.data["user_id"]
         }
         _LOGGER.debug("Gửi payload đến lastOnlineByAccount: %s", payload)
         url = f"{zalo_server}/api/lastOnlineByAccount"
