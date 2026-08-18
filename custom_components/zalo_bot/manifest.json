@@ -10,5 +10,5 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/khaisilk1910/zalo-bot-hacs/issues",
   "single_config_entry": true,
-  "version": "2026.08.18.0805"
+  "version": "2026.8.18.2"
 }

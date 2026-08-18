@@ -2,7 +2,7 @@
 
 Custom integration cho Home Assistant kết nối tới **Zalo Bot Server** để gửi/nhận thao tác Zalo trong automation, script và Developer Tools.
 
-> Phiên bản tài liệu này dành cho **Zalo Bot HACS v2026.8.18.1** và được rà soát trực tiếp với **zalo-bot-server-zcajs-2.1.2-reviewed** (server package 1.1.0, `zca-js` 2.1.2).
+> Phiên bản tài liệu này dành cho **Zalo Bot HACS v2026.8.18.2** và được rà soát trực tiếp với **zalo-bot-server-zcajs-2.1.2-reviewed** (server package 1.1.0, `zca-js` 2.1.2).
 
 ## Tính năng
 
@@ -13,17 +13,18 @@ Custom integration cho Home Assistant kết nối tới **Zalo Bot Server** đ�
 - Binary sensor trạng thái Zalo Server và trạng thái đăng nhập Zalo; lần refresh kết nối đầu chạy nền để không giữ quá trình setup/startup của Home Assistant.
 - Button lấy QR đăng nhập Zalo.
 - Switch bật/tắt notification và Markdown.
-- Select màu Markdown.
+- Select màu mặc định cho chữ đậm Markdown; màu inline trong nội dung có độ ưu tiên cao hơn.
 - 97 action cho message, media, account, friend, group, webhook, proxy, reminder, poll, quick message và conversation settings.
 - Hỗ trợ file/ảnh local của Home Assistant và URL từ xa.
 - Gửi nhiều ảnh giữ đúng thứ tự, URL riêng và không ghi đè ảnh trùng tên.
+- Hỗ trợ rich text cho `send_message`: Markdown cũ + màu, kích thước, list và indent; offset/length được tính theo UTF-16 để không lệch format khi có emoji.
 - Hỗ trợ Auto Delete `off`, `1d`, `7d`, `14d` theo Zalo Server.
 - Hỗ trợ lấy lời mời kết bạn đã nhận và lịch sử nhóm từ cache bền vững của Zalo Server.
 - Action lỗi sẽ báo `HomeAssistantError` đúng nghĩa để automation nhận biết thao tác thất bại.
 
 ## Yêu cầu
 
-- Home Assistant **2024.3.0** trở lên.
+- Home Assistant **2024.3.0** trở lên; code đã được rà soát với các thay đổi developer được công bố cho Home Assistant Core 2026.8.
 - HACS nếu muốn cài/cập nhật integration thuận tiện.
 - Khuyến nghị dùng đúng **zalo-bot-server-zcajs-2.1.2-reviewed** (server package 1.1.0, `zca-js` 2.1.2) hoặc bản server mới hơn có cùng API contract.
 - Username/password quản trị của Zalo Server.
@@ -101,7 +102,7 @@ Integration tạo một device **Zalo Bot** với các entity chính:
 | `Zalo Login` | Binary sensor trạng thái đăng nhập/kết nối Zalo. |
 | `Thông báo` | Bật/tắt notification kết quả từ integration. |
 | `Markdown` | Bật/tắt xử lý Markdown. |
-| `Markdown Color` | Chọn màu Markdown: `none`, `red`, `orange`, `yellow`, `green`. |
+| `Markdown Color` | Màu mặc định áp dụng cho các đoạn **bold** Markdown: `none`, `red`, `orange`, `yellow`, `green`. Màu inline `{red}...{/red}`... có ưu tiên cao hơn. |
 | `Login QR` | Button gọi action lấy QR đăng nhập Zalo. |
 
 Tên entity ID thực tế do Home Assistant tạo và có thể khác tùy ngôn ngữ/đổi tên của người dùng.
@@ -278,6 +279,90 @@ data:
   type: "1"
   message: "Thông báo từ Home Assistant"
 ```
+
+## Format text / Rich text Zalo
+
+Format text được xử lý **chỉ khi entity `Markdown` đang bật**. Integration giữ nguyên cú pháp Markdown đã có và bổ sung các style mà `zca-js 2.1.2` hỗ trợ chính thức. Khi gửi lên server, `start` và `len` của từng style được tính theo **UTF-16 code unit giống JavaScript/Zalo**, vì vậy emoji như `😀`, `🔥`, ký tự ngoài BMP... không làm lệch vị trí format của phần text phía sau.
+
+### Cú pháp hỗ trợ
+
+| Cú pháp nhập | Kết quả trên Zalo | Ghi chú |
+|---|---|---|
+| `**nội dung**` | **Đậm** | Giữ nguyên cú pháp cũ. |
+| `*nội dung*` | *Nghiêng* | Giữ nguyên cú pháp cũ. |
+| `***nội dung***` | **Đậm + nghiêng** | Có thể lồng với màu/kích thước. |
+| `__nội dung__` | Gạch chân | Giữ nguyên cú pháp cũ. |
+| `~~nội dung~~` | Gạch ngang | Giữ nguyên cú pháp cũ. |
+| `` `nội dung` `` | Nghiêng | Giữ hành vi tương thích của integration cũ. Markdown bên trong đoạn này không được parse tiếp. |
+| `# Tiêu đề` | Chữ lớn + đậm | Zalo/zca-js 2.1.2 chỉ có cỡ `Big (f_18)` và `Small (f_13)`; không dùng token `f_20`. |
+| `## Tiêu đề` | Chữ lớn + đậm | Kết hợp `f_18` + `b`. |
+| `### Tiêu đề` | Đậm | |
+| `####` đến `######` | Chữ nhỏ | Dùng `f_13`. |
+| `> nội dung` | Nghiêng | Giữ hành vi blockquote cũ của integration. |
+| `[nhãn](https://...)` | URL | Giữ hành vi tương thích cũ: phần hiển thị được thay bằng URL. |
+| `{red}nội dung{/red}` | Chữ đỏ | Màu Zalo hỗ trợ chính thức. |
+| `{orange}nội dung{/orange}` | Chữ cam | Màu Zalo hỗ trợ chính thức. |
+| `{yellow}nội dung{/yellow}` | Chữ vàng | Màu Zalo hỗ trợ chính thức. |
+| `{green}nội dung{/green}` | Chữ xanh lá | Màu Zalo hỗ trợ chính thức. |
+| `{big}nội dung{/big}` | Chữ lớn | `f_18`. |
+| `{small}nội dung{/small}` | Chữ nhỏ | `f_13`. |
+| `- Mục`, `* Mục`, `+ Mục` | Danh sách bullet | Marker đầu dòng được bỏ khỏi text và chuyển thành style `lst_1`. |
+| `1. Mục`, `2. Mục` | Danh sách đánh số | Cũng chấp nhận `1) Mục`; chuyển thành `lst_2`. |
+| 1–8 khoảng trắng ở đầu dòng | Thụt lề | Chuyển thành `ind_$` + `indentSize`; tab được tính như 4 khoảng trắng. |
+
+> `Markdown Color` là màu mặc định cho các đoạn **bold**. Nếu một đoạn có màu inline như `{red}...{/red}`, màu inline được ưu tiên để tránh hai màu xung đột trên cùng vùng text.
+
+### Kết hợp nhiều format
+
+Có thể lồng format, ví dụ:
+
+```text
+{red}**CẢNH BÁO**{/red}
+{green}***Hệ thống hoạt động bình thường***{/green}
+{big}**NHIỆT ĐỘ CAO 🔥**{/big}
+{small}Ghi chú nhỏ{/small}
+```
+
+Danh sách và indent:
+
+```text
+- Thiết bị tầng 1
+  - Phòng khách 😀
+  - Phòng bếp
+- Thiết bị tầng 2
+
+1. Kiểm tra cửa
+2. Kiểm tra camera
+  1. Camera cổng
+  2. Camera sân
+```
+
+Trong automation Home Assistant, nên dùng YAML block `|` để giữ nguyên xuống dòng và khoảng trắng đầu dòng:
+
+```yaml
+action: zalo_bot.send_message
+data:
+  account_selection: "+84123456789"
+  thread_id: "5841349563795164131"
+  type: "1"
+  message: |
+    {red}**CẢNH BÁO 🔥**{/red}
+    Nhiệt độ đang cao.
+
+    - Phòng khách
+      - Cảm biến 1
+      - Cảm biến 2
+
+    {small}Tin nhắn tự động từ Home Assistant{/small}
+```
+
+### Lưu ý
+
+- Chỉ các màu `red`, `orange`, `yellow`, `green` được dùng vì đây là các token màu được `zca-js 2.1.2` định nghĩa. Integration không tự tạo màu HEX tùy ý.
+- Có thể escape tag format để gửi nguyên văn, ví dụ `\{red}` sẽ hiển thị `{red}` thay vì bắt đầu màu đỏ.
+- Marker Markdown không đóng sẽ được giữ như text thường thay vì bị xóa.
+- Rich text hiện áp dụng cho action `zalo_bot.send_message`. Các action media/caption có luồng API khác và không được giả định sẽ render `styles` giống tin nhắn text.
+- Parser chỉ chạy khi gọi action gửi tin nhắn, được đưa qua Home Assistant executor để cả message format lớn cũng không giữ event loop; không tạo network/filesystem I/O hoặc công việc nền khi Home Assistant khởi động.
 
 ## Gửi nhiều ảnh
 

@@ -22,7 +22,7 @@ async def async_setup_entry(
 
 
 class ZaloBotMarkdownColorSelect(SelectEntity, RestoreEntity):
-    """Select entity để chọn màu cho markdown bold."""
+    """Select entity for the default color applied to Markdown bold ranges."""
 
     _attr_has_entity_name = True
     _attr_name = "Markdown Color"

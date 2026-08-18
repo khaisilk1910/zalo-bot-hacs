@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026.8.18.2
+
+### Rich text / Markdown
+- Giữ nguyên parser Markdown cũ cho `**bold**`, `*italic*`, `***bold+italic***`, `__underline__`, `~~strike~~`, heading, blockquote, inline code và link.
+- Bổ sung format inline `{red}`, `{orange}`, `{yellow}`, `{green}`, `{big}`, `{small}` theo đúng `TextStyle` của zca-js 2.1.2.
+- Bổ sung Markdown unordered list (`-`, `*`, `+`), ordered list (`1.`/`1)`) và indent đầu dòng bằng `ind_$` + `indentSize`.
+- Sửa heading H1 không còn dùng token không được zca-js 2.1.2 công bố `f_20`; H1/H2 dùng hai style atomic `f_18` + `b`.
+- Hỗ trợ lồng màu/kích thước với Markdown; màu inline có ưu tiên hơn entity `Markdown Color`.
+- Payload style được tách thành từng `TextStyle` atomic đúng type công khai của zca-js 2.1.2; không phụ thuộc chuỗi token ghép không được type định nghĩa.
+- Tất cả `start`/`len` style được tính theo UTF-16 code unit để emoji/ký tự ngoài BMP không làm lệch format.
+- Bổ sung escape cho tag inline, ví dụ `\{red}` để gửi literal `{red}`.
+- Tách parser rich text sang `text_formatting.py` thuần xử lý chuỗi và chạy parser qua Home Assistant executor khi gửi tin, nên message format lớn không giữ event loop và không ảnh hưởng startup.
+
+### Home Assistant compatibility / verification
+- Không thêm network/filesystem I/O vào `async_setup_entry`; binary sensor vẫn refresh lần đầu bằng config-entry background task.
+- Rà soát thay đổi device registry công bố cho Home Assistant Core 2026.8: integration chỉ tạo một device thuộc đúng config entry và không dùng device/subentry API bị loại bỏ.
+- Giữ đăng ký action trong `async_setup`, `async_forward_entry_setups`/`async_unload_platforms`, config-flow network validation trong executor và HTTP action I/O trong executor.
+- README bổ sung bảng format, ví dụ kết hợp màu/kích thước/list/indent và lưu ý UTF-16/emoji.
+
 ## 2026.8.18.1
 
 ### Zalo Server / zca-js 2.1.2 compatibility
