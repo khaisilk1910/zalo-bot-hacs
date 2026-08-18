@@ -31,13 +31,61 @@ send_message:
           - label: Group
             value: '1'
     ttl:
-      description: Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày.
+      description: TTL tự xóa của từng tin nhắn. zca-js nhận milliseconds; UI hỗ trợ 1-24 giờ và các mốc ngày. Không thay đổi Auto Delete của cả cuộc trò chuyện.
       required: false
       selector:
         select:
           options:
-          - label: Tắt Auto Delete
+          - label: Không tự xóa
             value: 'off'
+          - label: 1 giờ
+            value: 1h
+          - label: 2 giờ
+            value: 2h
+          - label: 3 giờ
+            value: 3h
+          - label: 4 giờ
+            value: 4h
+          - label: 5 giờ
+            value: 5h
+          - label: 6 giờ
+            value: 6h
+          - label: 7 giờ
+            value: 7h
+          - label: 8 giờ
+            value: 8h
+          - label: 9 giờ
+            value: 9h
+          - label: 10 giờ
+            value: 10h
+          - label: 11 giờ
+            value: 11h
+          - label: 12 giờ
+            value: 12h
+          - label: 13 giờ
+            value: 13h
+          - label: 14 giờ
+            value: 14h
+          - label: 15 giờ
+            value: 15h
+          - label: 16 giờ
+            value: 16h
+          - label: 17 giờ
+            value: 17h
+          - label: 18 giờ
+            value: 18h
+          - label: 19 giờ
+            value: 19h
+          - label: 20 giờ
+            value: 20h
+          - label: 21 giờ
+            value: 21h
+          - label: 22 giờ
+            value: 22h
+          - label: 23 giờ
+            value: 23h
+          - label: 24 giờ
+            value: 24h
           - label: 1 ngày
             value: 1d
           - label: 7 ngày
@@ -88,13 +136,61 @@ send_file:
           - label: Group
             value: '1'
     ttl:
-      description: Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày.
+      description: TTL tự xóa của từng tin nhắn. zca-js nhận milliseconds; UI hỗ trợ 1-24 giờ và các mốc ngày. Không thay đổi Auto Delete của cả cuộc trò chuyện.
       required: false
       selector:
         select:
           options:
-          - label: Tắt Auto Delete
+          - label: Không tự xóa
             value: 'off'
+          - label: 1 giờ
+            value: 1h
+          - label: 2 giờ
+            value: 2h
+          - label: 3 giờ
+            value: 3h
+          - label: 4 giờ
+            value: 4h
+          - label: 5 giờ
+            value: 5h
+          - label: 6 giờ
+            value: 6h
+          - label: 7 giờ
+            value: 7h
+          - label: 8 giờ
+            value: 8h
+          - label: 9 giờ
+            value: 9h
+          - label: 10 giờ
+            value: 10h
+          - label: 11 giờ
+            value: 11h
+          - label: 12 giờ
+            value: 12h
+          - label: 13 giờ
+            value: 13h
+          - label: 14 giờ
+            value: 14h
+          - label: 15 giờ
+            value: 15h
+          - label: 16 giờ
+            value: 16h
+          - label: 17 giờ
+            value: 17h
+          - label: 18 giờ
+            value: 18h
+          - label: 19 giờ
+            value: 19h
+          - label: 20 giờ
+            value: 20h
+          - label: 21 giờ
+            value: 21h
+          - label: 22 giờ
+            value: 22h
+          - label: 23 giờ
+            value: 23h
+          - label: 24 giờ
+            value: 24h
           - label: 1 ngày
             value: 1d
           - label: 7 ngày
@@ -140,13 +236,61 @@ send_image:
           - label: Group
             value: '1'
     ttl:
-      description: Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày.
+      description: TTL tự xóa của từng tin nhắn. zca-js nhận milliseconds; UI hỗ trợ 1-24 giờ và các mốc ngày. Không thay đổi Auto Delete của cả cuộc trò chuyện.
       required: false
       selector:
         select:
           options:
-          - label: Tắt Auto Delete
+          - label: Không tự xóa
             value: 'off'
+          - label: 1 giờ
+            value: 1h
+          - label: 2 giờ
+            value: 2h
+          - label: 3 giờ
+            value: 3h
+          - label: 4 giờ
+            value: 4h
+          - label: 5 giờ
+            value: 5h
+          - label: 6 giờ
+            value: 6h
+          - label: 7 giờ
+            value: 7h
+          - label: 8 giờ
+            value: 8h
+          - label: 9 giờ
+            value: 9h
+          - label: 10 giờ
+            value: 10h
+          - label: 11 giờ
+            value: 11h
+          - label: 12 giờ
+            value: 12h
+          - label: 13 giờ
+            value: 13h
+          - label: 14 giờ
+            value: 14h
+          - label: 15 giờ
+            value: 15h
+          - label: 16 giờ
+            value: 16h
+          - label: 17 giờ
+            value: 17h
+          - label: 18 giờ
+            value: 18h
+          - label: 19 giờ
+            value: 19h
+          - label: 20 giờ
+            value: 20h
+          - label: 21 giờ
+            value: 21h
+          - label: 22 giờ
+            value: 22h
+          - label: 23 giờ
+            value: 23h
+          - label: 24 giờ
+            value: 24h
           - label: 1 ngày
             value: 1d
           - label: 7 ngày
@@ -344,13 +488,61 @@ send_image_to_user:
       selector:
         text: {}
     ttl:
-      description: Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày.
+      description: TTL tự xóa của từng tin nhắn. zca-js nhận milliseconds; UI hỗ trợ 1-24 giờ và các mốc ngày. Không thay đổi Auto Delete của cả cuộc trò chuyện.
       required: false
       selector:
         select:
           options:
-          - label: Tắt Auto Delete
+          - label: Không tự xóa
             value: 'off'
+          - label: 1 giờ
+            value: 1h
+          - label: 2 giờ
+            value: 2h
+          - label: 3 giờ
+            value: 3h
+          - label: 4 giờ
+            value: 4h
+          - label: 5 giờ
+            value: 5h
+          - label: 6 giờ
+            value: 6h
+          - label: 7 giờ
+            value: 7h
+          - label: 8 giờ
+            value: 8h
+          - label: 9 giờ
+            value: 9h
+          - label: 10 giờ
+            value: 10h
+          - label: 11 giờ
+            value: 11h
+          - label: 12 giờ
+            value: 12h
+          - label: 13 giờ
+            value: 13h
+          - label: 14 giờ
+            value: 14h
+          - label: 15 giờ
+            value: 15h
+          - label: 16 giờ
+            value: 16h
+          - label: 17 giờ
+            value: 17h
+          - label: 18 giờ
+            value: 18h
+          - label: 19 giờ
+            value: 19h
+          - label: 20 giờ
+            value: 20h
+          - label: 21 giờ
+            value: 21h
+          - label: 22 giờ
+            value: 22h
+          - label: 23 giờ
+            value: 23h
+          - label: 24 giờ
+            value: 24h
           - label: 1 ngày
             value: 1d
           - label: 7 ngày
@@ -382,13 +574,61 @@ send_images_to_user:
       selector:
         text: {}
     ttl:
-      description: Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày.
+      description: TTL tự xóa của từng tin nhắn. zca-js nhận milliseconds; UI hỗ trợ 1-24 giờ và các mốc ngày. Không thay đổi Auto Delete của cả cuộc trò chuyện.
       required: false
       selector:
         select:
           options:
-          - label: Tắt Auto Delete
+          - label: Không tự xóa
             value: 'off'
+          - label: 1 giờ
+            value: 1h
+          - label: 2 giờ
+            value: 2h
+          - label: 3 giờ
+            value: 3h
+          - label: 4 giờ
+            value: 4h
+          - label: 5 giờ
+            value: 5h
+          - label: 6 giờ
+            value: 6h
+          - label: 7 giờ
+            value: 7h
+          - label: 8 giờ
+            value: 8h
+          - label: 9 giờ
+            value: 9h
+          - label: 10 giờ
+            value: 10h
+          - label: 11 giờ
+            value: 11h
+          - label: 12 giờ
+            value: 12h
+          - label: 13 giờ
+            value: 13h
+          - label: 14 giờ
+            value: 14h
+          - label: 15 giờ
+            value: 15h
+          - label: 16 giờ
+            value: 16h
+          - label: 17 giờ
+            value: 17h
+          - label: 18 giờ
+            value: 18h
+          - label: 19 giờ
+            value: 19h
+          - label: 20 giờ
+            value: 20h
+          - label: 21 giờ
+            value: 21h
+          - label: 22 giờ
+            value: 22h
+          - label: 23 giờ
+            value: 23h
+          - label: 24 giờ
+            value: 24h
           - label: 1 ngày
             value: 1d
           - label: 7 ngày
@@ -420,13 +660,61 @@ send_image_to_group:
       selector:
         text: {}
     ttl:
-      description: Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày.
+      description: TTL tự xóa của từng tin nhắn. zca-js nhận milliseconds; UI hỗ trợ 1-24 giờ và các mốc ngày. Không thay đổi Auto Delete của cả cuộc trò chuyện.
       required: false
       selector:
         select:
           options:
-          - label: Tắt Auto Delete
+          - label: Không tự xóa
             value: 'off'
+          - label: 1 giờ
+            value: 1h
+          - label: 2 giờ
+            value: 2h
+          - label: 3 giờ
+            value: 3h
+          - label: 4 giờ
+            value: 4h
+          - label: 5 giờ
+            value: 5h
+          - label: 6 giờ
+            value: 6h
+          - label: 7 giờ
+            value: 7h
+          - label: 8 giờ
+            value: 8h
+          - label: 9 giờ
+            value: 9h
+          - label: 10 giờ
+            value: 10h
+          - label: 11 giờ
+            value: 11h
+          - label: 12 giờ
+            value: 12h
+          - label: 13 giờ
+            value: 13h
+          - label: 14 giờ
+            value: 14h
+          - label: 15 giờ
+            value: 15h
+          - label: 16 giờ
+            value: 16h
+          - label: 17 giờ
+            value: 17h
+          - label: 18 giờ
+            value: 18h
+          - label: 19 giờ
+            value: 19h
+          - label: 20 giờ
+            value: 20h
+          - label: 21 giờ
+            value: 21h
+          - label: 22 giờ
+            value: 22h
+          - label: 23 giờ
+            value: 23h
+          - label: 24 giờ
+            value: 24h
           - label: 1 ngày
             value: 1d
           - label: 7 ngày
@@ -458,13 +746,61 @@ send_images_to_group:
       selector:
         text: {}
     ttl:
-      description: Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày.
+      description: TTL tự xóa của từng tin nhắn. zca-js nhận milliseconds; UI hỗ trợ 1-24 giờ và các mốc ngày. Không thay đổi Auto Delete của cả cuộc trò chuyện.
       required: false
       selector:
         select:
           options:
-          - label: Tắt Auto Delete
+          - label: Không tự xóa
             value: 'off'
+          - label: 1 giờ
+            value: 1h
+          - label: 2 giờ
+            value: 2h
+          - label: 3 giờ
+            value: 3h
+          - label: 4 giờ
+            value: 4h
+          - label: 5 giờ
+            value: 5h
+          - label: 6 giờ
+            value: 6h
+          - label: 7 giờ
+            value: 7h
+          - label: 8 giờ
+            value: 8h
+          - label: 9 giờ
+            value: 9h
+          - label: 10 giờ
+            value: 10h
+          - label: 11 giờ
+            value: 11h
+          - label: 12 giờ
+            value: 12h
+          - label: 13 giờ
+            value: 13h
+          - label: 14 giờ
+            value: 14h
+          - label: 15 giờ
+            value: 15h
+          - label: 16 giờ
+            value: 16h
+          - label: 17 giờ
+            value: 17h
+          - label: 18 giờ
+            value: 18h
+          - label: 19 giờ
+            value: 19h
+          - label: 20 giờ
+            value: 20h
+          - label: 21 giờ
+            value: 21h
+          - label: 22 giờ
+            value: 22h
+          - label: 23 giờ
+            value: 23h
+          - label: 24 giờ
+            value: 24h
           - label: 1 ngày
             value: 1d
           - label: 7 ngày
@@ -807,6 +1143,68 @@ send_voice:
             value: '0'
           - label: Group
             value: '1'
+    ttl:
+      description: TTL tự xóa của từng tin nhắn. zca-js nhận milliseconds; UI hỗ trợ 1-24 giờ và các mốc ngày. Không thay đổi Auto Delete của cả cuộc trò chuyện.
+      required: false
+      selector:
+        select:
+          options:
+          - label: Không tự xóa
+            value: 'off'
+          - label: 1 giờ
+            value: 1h
+          - label: 2 giờ
+            value: 2h
+          - label: 3 giờ
+            value: 3h
+          - label: 4 giờ
+            value: 4h
+          - label: 5 giờ
+            value: 5h
+          - label: 6 giờ
+            value: 6h
+          - label: 7 giờ
+            value: 7h
+          - label: 8 giờ
+            value: 8h
+          - label: 9 giờ
+            value: 9h
+          - label: 10 giờ
+            value: 10h
+          - label: 11 giờ
+            value: 11h
+          - label: 12 giờ
+            value: 12h
+          - label: 13 giờ
+            value: 13h
+          - label: 14 giờ
+            value: 14h
+          - label: 15 giờ
+            value: 15h
+          - label: 16 giờ
+            value: 16h
+          - label: 17 giờ
+            value: 17h
+          - label: 18 giờ
+            value: 18h
+          - label: 19 giờ
+            value: 19h
+          - label: 20 giờ
+            value: 20h
+          - label: 21 giờ
+            value: 21h
+          - label: 22 giờ
+            value: 22h
+          - label: 23 giờ
+            value: 23h
+          - label: 24 giờ
+            value: 24h
+          - label: 1 ngày
+            value: 1d
+          - label: 7 ngày
+            value: 7d
+          - label: 14 ngày
+            value: 14d
 get_all_friends:
   description: Lấy danh sách tất cả bạn bè
   fields:
@@ -1799,6 +2197,68 @@ send_video:
       required: true
       selector:
         text: null
+    ttl:
+      description: TTL tự xóa của từng tin nhắn. zca-js nhận milliseconds; UI hỗ trợ 1-24 giờ và các mốc ngày. Không thay đổi Auto Delete của cả cuộc trò chuyện.
+      required: false
+      selector:
+        select:
+          options:
+          - label: Không tự xóa
+            value: 'off'
+          - label: 1 giờ
+            value: 1h
+          - label: 2 giờ
+            value: 2h
+          - label: 3 giờ
+            value: 3h
+          - label: 4 giờ
+            value: 4h
+          - label: 5 giờ
+            value: 5h
+          - label: 6 giờ
+            value: 6h
+          - label: 7 giờ
+            value: 7h
+          - label: 8 giờ
+            value: 8h
+          - label: 9 giờ
+            value: 9h
+          - label: 10 giờ
+            value: 10h
+          - label: 11 giờ
+            value: 11h
+          - label: 12 giờ
+            value: 12h
+          - label: 13 giờ
+            value: 13h
+          - label: 14 giờ
+            value: 14h
+          - label: 15 giờ
+            value: 15h
+          - label: 16 giờ
+            value: 16h
+          - label: 17 giờ
+            value: 17h
+          - label: 18 giờ
+            value: 18h
+          - label: 19 giờ
+            value: 19h
+          - label: 20 giờ
+            value: 20h
+          - label: 21 giờ
+            value: 21h
+          - label: 22 giờ
+            value: 22h
+          - label: 23 giờ
+            value: 23h
+          - label: 24 giờ
+            value: 24h
+          - label: 1 ngày
+            value: 1d
+          - label: 7 ngày
+            value: 7d
+          - label: 14 ngày
+            value: 14d
 create_note_group:
   description: Tạo ghi chú mới trong nhóm
   fields:

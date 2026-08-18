@@ -30,6 +30,8 @@ from . import (
     user_features,
 )
 
+from .helpers import normalize_zalo_json_payload
+
 from .const import (
 
     CONF_ENABLE_NOTIFICATIONS,
@@ -213,12 +215,34 @@ class TimeoutSession(requests.Session):
         if is_our_server and not is_login:
             self.authenticate()
 
+        # Zalo IDs routinely exceed JavaScript's Number.MAX_SAFE_INTEGER.
+        # Force all known identifier fields to JSON strings before the request
+        # reaches the Node.js server so no precision can be lost in JSON.parse.
+        if is_our_server and "json" in kwargs:
+            kwargs["json"] = normalize_zalo_json_payload(kwargs["json"])
+
         response = super().request(method, url, **kwargs)
         if is_our_server and not is_login and response.status_code == 401:
             response.close()
             self.authenticate(force=True)
             response = super().request(method, url, **kwargs)
-        response.raise_for_status()
+
+        if response.status_code >= 400:
+            detail = None
+            try:
+                body = response.json()
+                if isinstance(body, dict):
+                    detail = body.get("error") or body.get("message")
+            except ValueError:
+                detail = None
+            if not detail:
+                text = response.text.strip()
+                detail = text[:500] if text else response.reason
+            raise requests.HTTPError(
+                f"Zalo Server HTTP {response.status_code}: {detail}",
+                response=response,
+            )
+
         return response
 
 
@@ -339,7 +363,7 @@ def get_device_info() -> DeviceInfo:
         name="Zalo Bot",
         manufacturer="Smarthome Black",
         model="Zalo Bot",
-        sw_version="2026.8.18.1",
+        sw_version="2026.8.18.3",
     )
 
 

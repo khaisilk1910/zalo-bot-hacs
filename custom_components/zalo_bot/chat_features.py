@@ -87,8 +87,8 @@ async def async_send_message_service(hass, call, zalo_login):
 
         payload = {
             "message": msg_obj,
-            "threadId": call.data["thread_id"],
-            "accountSelection": call.data["account_selection"],
+            "threadId": str(call.data["thread_id"]),
+            "accountSelection": str(call.data["account_selection"]),
             "type": normalize_thread_type(msg_type)
         }
         if "ttl" in call.data:
@@ -155,8 +155,8 @@ async def async_send_file_service(hass, call, zalo_login):
         payload = {
             "fileUrl": public_url,
             "message": call.data.get("message", ""),
-            "threadId": call.data["thread_id"],
-            "accountSelection": call.data["account_selection"],
+            "threadId": str(call.data["thread_id"]),
+            "accountSelection": str(call.data["account_selection"]),
             "type": normalize_thread_type(msg_type),
         }
         if "ttl" in call.data:
@@ -214,8 +214,8 @@ async def async_send_image_service(hass, call, zalo_login):
                 return {"error": error_msg}
         payload = {
             "imagePath": public_url,
-            "threadId": call.data["thread_id"],
-            "accountSelection": call.data["account_selection"],
+            "threadId": str(call.data["thread_id"]),
+            "accountSelection": str(call.data["account_selection"]),
             "type": normalize_thread_type(msg_type),
             "message": call.data.get("message", ""),
         }
@@ -297,6 +297,8 @@ async def async_send_video_service(hass, call, zalo_login):
             "width": int(call.data.get("width", 1280)),
             "height": int(call.data.get("height", 720)),
         }
+        if "ttl" in call.data:
+            options["ttl"] = call.data["ttl"]
         thread_type_num = normalize_thread_type(msg_type)
         payload = {
             "threadId": str(call.data["thread_id"]),
@@ -346,8 +348,8 @@ async def async_send_sticker_service(hass, call, zalo_login):
             "type": 1
         }
         payload = {
-            "accountSelection": call.data["account_selection"],
-            "threadId": call.data["thread_id"],
+            "accountSelection": str(call.data["account_selection"]),
+            "threadId": str(call.data["thread_id"]),
             "sticker": sticker,
             "type": normalize_thread_type(msg_type)
         }
@@ -379,10 +381,13 @@ async def async_send_voice_service(hass, call, zalo_login):
                 )
             else:
                 raise Exception(f"Không tìm thấy file âm thanh: {voice_path}")
+        options = {"voiceUrl": voice_url}
+        if "ttl" in call.data:
+            options["ttl"] = call.data["ttl"]
         payload = {
-            "threadId": call.data["thread_id"],
-            "accountSelection": call.data["account_selection"],
-            "options": {"voiceUrl": voice_url},
+            "threadId": str(call.data["thread_id"]),
+            "accountSelection": str(call.data["account_selection"]),
+            "options": options,
             "type": normalize_thread_type(call.data.get("type", "0")),
         }
         resp = await hass.async_add_executor_job(
@@ -404,8 +409,8 @@ async def async_send_typing_event_service(hass, call, zalo_login):
     _LOGGER.debug("Dịch vụ async_send_typing_event được gọi với: %s", call.data)
     try:
         payload = {
-            "threadId": call.data["thread_id"],
-            "accountSelection": call.data["account_selection"],
+            "threadId": str(call.data["thread_id"]),
+            "accountSelection": str(call.data["account_selection"]),
             "type": normalize_thread_type(call.data.get("type", "0")),
         }
         resp = await hass.async_add_executor_job(
@@ -457,8 +462,8 @@ async def async_send_image_to_user_service(hass, call, zalo_login):
                 return {"error": error_msg}
         payload = {
             "imagePath": public_url,
-            "threadId": call.data["thread_id"],
-            "accountSelection": call.data["account_selection"]
+            "threadId": str(call.data["thread_id"]),
+            "accountSelection": str(call.data["account_selection"])
         }
         if "ttl" in call.data:
             payload["ttl"] = call.data["ttl"]
@@ -511,8 +516,8 @@ async def async_send_image_to_group_service(hass, call, zalo_login):
                 return {"error": error_msg}
         payload = {
             "imagePath": public_url,
-            "threadId": call.data["thread_id"],
-            "accountSelection": call.data["account_selection"]
+            "threadId": str(call.data["thread_id"]),
+            "accountSelection": str(call.data["account_selection"])
         }
         if "ttl" in call.data:
             payload["ttl"] = call.data["ttl"]
@@ -587,8 +592,8 @@ async def async_send_images_to_user_service(hass, call, zalo_login):
 
         payload = {
             "imagePaths": processed_paths,
-            "threadId": call.data["thread_id"],
-            "accountSelection": call.data["account_selection"],
+            "threadId": str(call.data["thread_id"]),
+            "accountSelection": str(call.data["account_selection"]),
         }
         if "ttl" in call.data:
             payload["ttl"] = call.data["ttl"]
@@ -620,8 +625,8 @@ async def async_send_images_to_group_service(hass, call, zalo_login):
 
         payload = {
             "imagePaths": processed_paths,
-            "threadId": call.data["thread_id"],
-            "accountSelection": call.data["account_selection"],
+            "threadId": str(call.data["thread_id"]),
+            "accountSelection": str(call.data["account_selection"]),
         }
         if "ttl" in call.data:
             payload["ttl"] = call.data["ttl"]

@@ -62,7 +62,7 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Value for thread id."
+          "description": "Value for thread id. (kept as a string to preserve large Zalo IDs exactly)"
         },
         "account_selection": {
           "name": "Zalo account",
@@ -73,8 +73,8 @@
           "description": "Value for type."
         },
         "ttl": {
-          "name": "Auto-delete duration",
-          "description": "Value for auto-delete duration."
+          "name": "Message auto-delete TTL",
+          "description": "Per-message TTL, separate from conversation Auto Delete. Supports 1-24 hours, 1 day, 7 days, 14 days, or milliseconds in YAML."
         },
         "quote": {
           "name": "Quote",
@@ -96,7 +96,7 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Value for thread id."
+          "description": "Value for thread id. (kept as a string to preserve large Zalo IDs exactly)"
         },
         "account_selection": {
           "name": "Zalo account",
@@ -107,8 +107,8 @@
           "description": "Value for type."
         },
         "ttl": {
-          "name": "Auto-delete duration",
-          "description": "Value for auto-delete duration."
+          "name": "Message auto-delete TTL",
+          "description": "Per-message TTL, separate from conversation Auto Delete. Supports 1-24 hours, 1 day, 7 days, 14 days, or milliseconds in YAML."
         }
       }
     },
@@ -126,7 +126,7 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Value for thread id."
+          "description": "Value for thread id. (kept as a string to preserve large Zalo IDs exactly)"
         },
         "account_selection": {
           "name": "Zalo account",
@@ -137,8 +137,8 @@
           "description": "Value for type."
         },
         "ttl": {
-          "name": "Auto-delete duration",
-          "description": "Value for auto-delete duration."
+          "name": "Message auto-delete TTL",
+          "description": "Per-message TTL, separate from conversation Auto Delete. Supports 1-24 hours, 1 day, 7 days, 14 days, or milliseconds in YAML."
         }
       }
     },
@@ -285,15 +285,15 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Value for thread id."
+          "description": "Value for thread id. (kept as a string to preserve large Zalo IDs exactly)"
         },
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
         },
         "ttl": {
-          "name": "Auto-delete duration",
-          "description": "Value for auto-delete duration."
+          "name": "Message auto-delete TTL",
+          "description": "Per-message TTL, separate from conversation Auto Delete. Supports 1-24 hours, 1 day, 7 days, 14 days, or milliseconds in YAML."
         }
       }
     },
@@ -307,15 +307,15 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Value for thread id."
+          "description": "Value for thread id. (kept as a string to preserve large Zalo IDs exactly)"
         },
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
         },
         "ttl": {
-          "name": "Auto-delete duration",
-          "description": "Value for auto-delete duration."
+          "name": "Message auto-delete TTL",
+          "description": "Per-message TTL, separate from conversation Auto Delete. Supports 1-24 hours, 1 day, 7 days, 14 days, or milliseconds in YAML."
         }
       }
     },
@@ -329,15 +329,15 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Value for thread id."
+          "description": "Value for thread id. (kept as a string to preserve large Zalo IDs exactly)"
         },
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
         },
         "ttl": {
-          "name": "Auto-delete duration",
-          "description": "Value for auto-delete duration."
+          "name": "Message auto-delete TTL",
+          "description": "Per-message TTL, separate from conversation Auto Delete. Supports 1-24 hours, 1 day, 7 days, 14 days, or milliseconds in YAML."
         }
       }
     },
@@ -351,15 +351,15 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Value for thread id."
+          "description": "Value for thread id. (kept as a string to preserve large Zalo IDs exactly)"
         },
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
         },
         "ttl": {
-          "name": "Auto-delete duration",
-          "description": "Value for auto-delete duration."
+          "name": "Message auto-delete TTL",
+          "description": "Per-message TTL, separate from conversation Auto Delete. Supports 1-24 hours, 1 day, 7 days, 14 days, or milliseconds in YAML."
         }
       }
     },
@@ -619,7 +619,7 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Value for thread id."
+          "description": "Value for thread id. (kept as a string to preserve large Zalo IDs exactly)"
         },
         "account_selection": {
           "name": "Zalo account",
@@ -628,6 +628,10 @@
         "type": {
           "name": "Type",
           "description": "Value for type."
+        },
+        "ttl": {
+          "name": "Message auto-delete TTL",
+          "description": "Per-message TTL, separate from conversation Auto Delete. Supports 1-24 hours, 1 day, 7 days, 14 days, or milliseconds in YAML."
         }
       }
     },
@@ -1333,7 +1337,7 @@
       "fields": {
         "thread_id": {
           "name": "Thread ID",
-          "description": "Value for thread id."
+          "description": "Value for thread id. (kept as a string to preserve large Zalo IDs exactly)"
         },
         "video_path_or_url": {
           "name": "Video Path Or Url",
@@ -1362,6 +1366,10 @@
         "account_selection": {
           "name": "Zalo account",
           "description": "Value for zalo account."
+        },
+        "ttl": {
+          "name": "Message auto-delete TTL",
+          "description": "Per-message TTL, separate from conversation Auto Delete. Supports 1-24 hours, 1 day, 7 days, 14 days, or milliseconds in YAML."
         }
       }
     },

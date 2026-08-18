@@ -62,7 +62,7 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "ThreadId nhận tin nhắn (user hoặc group)"
+          "description": "ThreadId nhận tin nhắn (user hoặc group) (luôn giữ dạng chuỗi để không mất độ chính xác ID lớn)"
         },
         "account_selection": {
           "name": "Tài khoản Zalo",
@@ -73,8 +73,8 @@
           "description": "Loại gửi: 0=user, 1=group (mặc định 0)"
         },
         "ttl": {
-          "name": "Thời gian tự xóa",
-          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+          "name": "TTL tự xóa tin nhắn",
+          "description": "TTL của từng tin nhắn, không phải Auto Delete của cả cuộc trò chuyện. Hỗ trợ 1-24 giờ, 1 ngày, 7 ngày, 14 ngày hoặc milliseconds trong YAML."
         },
         "quote": {
           "name": "Tin nhắn trích dẫn",
@@ -96,7 +96,7 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "ThreadId nhận tin nhắn (user hoặc group)"
+          "description": "ThreadId nhận tin nhắn (user hoặc group) (luôn giữ dạng chuỗi để không mất độ chính xác ID lớn)"
         },
         "account_selection": {
           "name": "Tài khoản Zalo",
@@ -107,8 +107,8 @@
           "description": "Loại gửi: 0=user, 1=group (mặc định 0)"
         },
         "ttl": {
-          "name": "Thời gian tự xóa",
-          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+          "name": "TTL tự xóa tin nhắn",
+          "description": "TTL của từng tin nhắn, không phải Auto Delete của cả cuộc trò chuyện. Hỗ trợ 1-24 giờ, 1 ngày, 7 ngày, 14 ngày hoặc milliseconds trong YAML."
         }
       }
     },
@@ -126,7 +126,7 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "ThreadId nhận ảnh (user hoặc group)"
+          "description": "ThreadId nhận ảnh (user hoặc group) (luôn giữ dạng chuỗi để không mất độ chính xác ID lớn)"
         },
         "account_selection": {
           "name": "Tài khoản Zalo",
@@ -137,8 +137,8 @@
           "description": "Loại gửi: 0=user, 1=group (mặc định 0)"
         },
         "ttl": {
-          "name": "Thời gian tự xóa",
-          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+          "name": "TTL tự xóa tin nhắn",
+          "description": "TTL của từng tin nhắn, không phải Auto Delete của cả cuộc trò chuyện. Hỗ trợ 1-24 giờ, 1 ngày, 7 ngày, 14 ngày hoặc milliseconds trong YAML."
         }
       }
     },
@@ -285,15 +285,15 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Thread ID"
+          "description": "Thread ID (luôn giữ dạng chuỗi để không mất độ chính xác ID lớn)"
         },
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số ĐT hoặc OwnID của bot"
         },
         "ttl": {
-          "name": "Thời gian tự xóa",
-          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+          "name": "TTL tự xóa tin nhắn",
+          "description": "TTL của từng tin nhắn, không phải Auto Delete của cả cuộc trò chuyện. Hỗ trợ 1-24 giờ, 1 ngày, 7 ngày, 14 ngày hoặc milliseconds trong YAML."
         }
       }
     },
@@ -307,15 +307,15 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Thread ID"
+          "description": "Thread ID (luôn giữ dạng chuỗi để không mất độ chính xác ID lớn)"
         },
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số ĐT hoặc OwnID của bot"
         },
         "ttl": {
-          "name": "Thời gian tự xóa",
-          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+          "name": "TTL tự xóa tin nhắn",
+          "description": "TTL của từng tin nhắn, không phải Auto Delete của cả cuộc trò chuyện. Hỗ trợ 1-24 giờ, 1 ngày, 7 ngày, 14 ngày hoặc milliseconds trong YAML."
         }
       }
     },
@@ -329,15 +329,15 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Thread ID"
+          "description": "Thread ID (luôn giữ dạng chuỗi để không mất độ chính xác ID lớn)"
         },
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số ĐT hoặc OwnID của bot"
         },
         "ttl": {
-          "name": "Thời gian tự xóa",
-          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+          "name": "TTL tự xóa tin nhắn",
+          "description": "TTL của từng tin nhắn, không phải Auto Delete của cả cuộc trò chuyện. Hỗ trợ 1-24 giờ, 1 ngày, 7 ngày, 14 ngày hoặc milliseconds trong YAML."
         }
       }
     },
@@ -351,15 +351,15 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "Thread ID"
+          "description": "Thread ID (luôn giữ dạng chuỗi để không mất độ chính xác ID lớn)"
         },
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số ĐT hoặc OwnID của bot"
         },
         "ttl": {
-          "name": "Thời gian tự xóa",
-          "description": "Auto Delete của cuộc trò chuyện. Chỉ thay đổi khi chọn giá trị; hỗ trợ tắt, 1 ngày, 7 ngày hoặc 14 ngày."
+          "name": "TTL tự xóa tin nhắn",
+          "description": "TTL của từng tin nhắn, không phải Auto Delete của cả cuộc trò chuyện. Hỗ trợ 1-24 giờ, 1 ngày, 7 ngày, 14 ngày hoặc milliseconds trong YAML."
         }
       }
     },
@@ -619,7 +619,7 @@
         },
         "thread_id": {
           "name": "Thread ID",
-          "description": "ThreadId nhận tin nhắn thoại"
+          "description": "ThreadId nhận tin nhắn thoại (luôn giữ dạng chuỗi để không mất độ chính xác ID lớn)"
         },
         "account_selection": {
           "name": "Tài khoản Zalo",
@@ -628,6 +628,10 @@
         "type": {
           "name": "Loại hội thoại",
           "description": "Loại gửi: 0=user, 1=group (mặc định 0)"
+        },
+        "ttl": {
+          "name": "TTL tự xóa tin nhắn",
+          "description": "TTL của từng tin nhắn, không phải Auto Delete của cả cuộc trò chuyện. Hỗ trợ 1-24 giờ, 1 ngày, 7 ngày, 14 ngày hoặc milliseconds trong YAML."
         }
       }
     },
@@ -1333,7 +1337,7 @@
       "fields": {
         "thread_id": {
           "name": "Thread ID",
-          "description": "ID cuộc trò chuyện"
+          "description": "ID cuộc trò chuyện (luôn giữ dạng chuỗi để không mất độ chính xác ID lớn)"
         },
         "video_path_or_url": {
           "name": "Đường dẫn video hoặc URL",
@@ -1362,6 +1366,10 @@
         "account_selection": {
           "name": "Tài khoản Zalo",
           "description": "Số điện thoại hoặc ID tài khoản"
+        },
+        "ttl": {
+          "name": "TTL tự xóa tin nhắn",
+          "description": "TTL của từng tin nhắn, không phải Auto Delete của cả cuộc trò chuyện. Hỗ trợ 1-24 giờ, 1 ngày, 7 ngày, 14 ngày hoặc milliseconds trong YAML."
         }
       }
     },

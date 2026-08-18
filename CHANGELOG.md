@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026.8.18.3
+
+### Zalo ID precision / webhook safety
+- Thêm `ZALO_ID_SCHEMA` cho các ID đơn của service; Python integer từ template được chuyển sang string trước khi request đi qua JSON/JavaScript, giữ nguyên toàn bộ chữ số.
+- Hỗ trợ dạng template-safe `zalo:<id>`; integration tự bỏ prefix trước khi gửi server.
+- Chuẩn hóa đệ quy các field ID/ID list trong JSON request về string, bao gồm cả ID lồng trong quote/message payload.
+- Các ID có contract dạng số của SDK (Poll ID và Quick Message item ID) được loại khỏi cơ chế ép chuỗi chung và chuẩn hóa riêng về `int`, tránh regression cho các action poll/quick-message.
+- `add_reaction` giữ `threadId`/`msgId`/`cliMsgId` dạng string đúng contract zca-js 2.1.2, bỏ round-trip qua Python `int`.
+- README thêm mẫu automation dùng webhook `_threadRef`/`_threadType`; không hard-code `type` và không dùng Zalo ID thuần số làm `conversation_id`.
+
+### Per-message TTL
+- Tách hoàn toàn TTL của message khỏi Auto Delete conversation.
+- Thêm lựa chọn `1h` đến `24h`, giữ `1d`, `7d`, `14d`, `off`; schema chuẩn hóa sang milliseconds.
+- TTL áp dụng cho text, file, ảnh đơn/nhiều ảnh, video và voice.
+- `update_auto_delete_chat` vẫn là action riêng với các mốc `off/1d/7d/14d`.
+
+### Reliability
+- TimeoutSession tiếp tục tái sử dụng connection/session, chạy blocking HTTP qua executor và hiện trả chi tiết lỗi JSON của server trong `HomeAssistantError`.
+- Không thêm I/O mạng/filesystem vào `async_setup_entry`; startup behavior giữ như v2026.8.18.2.
+- Rà soát Options Flow với Home Assistant 2026.8: tiếp tục dùng update listener + `OptionsFlow.async_create_entry` (không dùng các config-flow helper tự reload), nên không rơi vào trường hợp double-reload/race bị deprecated từ Core 2026.6 và vẫn giữ tương thích các bản HA cũ mà integration đã công bố.
+
 ## 2026.8.18.2
 
 ### Rich text / Markdown

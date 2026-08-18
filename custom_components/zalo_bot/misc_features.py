@@ -507,12 +507,11 @@ async def async_add_reaction_service(hass, call, zalo_login):
     """Thêm cảm xúc cho tin nhắn."""
     _LOGGER.debug("Dịch vụ async_add_reaction được gọi với: %s", call.data)
     try:
-        try:
-            msg_id = int(call.data["msg_id"])
-            cli_msg_id = int(call.data["cli_msg_id"])
-        except ValueError:
-            msg_id = call.data["msg_id"]
-            cli_msg_id = call.data["cli_msg_id"]
+        # zca-js 2.1.2 models msgId/cliMsgId/threadId as strings.  Keep them
+        # textual end-to-end so large identifiers never pass through a numeric
+        # representation before the request reaches the Node.js server.
+        msg_id = str(call.data["msg_id"])
+        cli_msg_id = str(call.data["cli_msg_id"])
         reaction_type = normalize_thread_type(call.data["type"])
         reaction_icon = call.data["icon"].lower()
         reaction_map = {
@@ -551,7 +550,7 @@ async def async_add_reaction_service(hass, call, zalo_login):
             "accountSelection": call.data["account_selection"],
             "icon": icon_value,
             "dest": {
-                "threadId": call.data["thread_id"],
+                "threadId": str(call.data["thread_id"]),
                 "type": reaction_type,
                 "data": {
                     "msgId": msg_id,

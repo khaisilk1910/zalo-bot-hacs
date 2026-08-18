@@ -25,14 +25,16 @@ POST /api/sendMessageByAccount
 
 ```json
 {
-  "message": {"msg": "xin chào bạn", "ttl": 0},
+  "message": {"msg": "xin chào bạn"},
   "threadId": "your_thread_id",
+  "ttl": "6h",
   "accountSelection": "your_account_id",
   "type": 0
 }
 ```
 
-- `threadId`: ID user hoặc group nhận tin
+- `threadId`: ID user hoặc group nhận tin. Luôn gửi dưới dạng **chuỗi JSON**, không gửi number đối với ID lớn.
+- `ttl`: TTL của **tin nhắn**; hỗ trợ `1h`..`24h`, `1d`, `7d`, `14d`, `off` hoặc milliseconds.
 - `accountSelection`: ownId tài khoản gửi
 - `type`: `0` = user, `1` = group
 
@@ -46,7 +48,7 @@ $body = @{username="your_username"; password="your_password"} | ConvertTo-Json
 Invoke-RestMethod "http://192.168.1.22:3000/api/login" -Method POST -Body $body -ContentType "application/json" -SessionVariable z
 
 # Gửi tin nhắn
-$msg = @{message=@{msg="xin chào bạn"; ttl=0}; threadId="your_thread_id"; accountSelection="your_account_id"; type=0} | ConvertTo-Json -Depth 3
+$msg = @{message=@{msg="xin chào bạn"}; threadId="your_thread_id"; ttl="6h"; accountSelection="your_account_id"; type=0} | ConvertTo-Json -Depth 3
 Invoke-RestMethod "http://192.168.1.22:3000/api/sendMessageByAccount" -Method POST -Body $msg -ContentType "application/json" -WebSession $z
 ```
 
@@ -61,7 +63,7 @@ curl -c cookie.txt -X POST http://192.168.1.22:3000/api/login \
 # Gửi tin nhắn
 curl -b cookie.txt -X POST http://192.168.1.22:3000/api/sendMessageByAccount \
   -H "Content-Type: application/json" \
-  -d '{"message":{"msg":"xin chào bạn","ttl":0},"threadId":"your_thread_id","accountSelection":"your_account_id","type":0}'
+  -d '{"message":{"msg":"xin chào bạn"},"threadId":"your_thread_id","ttl":"6h","accountSelection":"your_account_id","type":0}'
 ```
 
 ## Ví dụ Python
@@ -71,8 +73,9 @@ import requests
 s = requests.Session()
 s.post("http://192.168.1.22:3000/api/login", json={"username": "your_username", "password": "your_password"})
 r = s.post("http://192.168.1.22:3000/api/sendMessageByAccount", json={
-    "message": {"msg": "xin chào bạn", "ttl": 0},
+    "message": {"msg": "xin chào bạn"},
     "threadId": "your_thread_id",
+    "ttl": "6h",
     "accountSelection": "your_account_id",
     "type": 0
 })
@@ -96,8 +99,9 @@ const res2 = await fetch(`${BASE}/api/sendMessageByAccount`, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    message: { msg: "xin chào bạn", ttl: 0 },
+    message: { msg: "xin chào bạn" },
     threadId: "your_thread_id",
+    ttl: "6h",
     accountSelection: "your_account_id",
     type: 0,
   }),
