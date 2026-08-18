@@ -563,41 +563,6 @@ Các endpoint/action đã được rà soát đồng bộ với server v1.0.6, b
 └── README.md
 ```
 
-## Release và cập nhật
-
-Integration dùng version trong:
-
-```text
-custom_components/zalo_bot/manifest.json
-```
-
-Quy trình release thông thường:
-
-```bash
-git pull --rebase origin main
-git add .
-git commit -m "Update Zalo Bot HACS"
-git push origin main
-```
-
-Sau đó tạo tag/release mới, ví dụ:
-
-```bash
-git tag -a v2026.8.18 -m "Zalo Bot HACS v2026.8.18"
-git push origin v2026.8.18
-```
-
-Publish GitHub Release tương ứng để HACS nhận phiên bản mới.
-
-## CI
-
-Repo có workflow:
-
-- HACS validation.
-- Home Assistant Hassfest validation.
-
-Chỉ nên publish release sau khi các workflow validation đều thành công.
-
 ## Lưu ý
 
 - Integration này cần **Zalo Bot Server**; nó không đăng nhập trực tiếp vào Zalo từ Home Assistant.
