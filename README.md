@@ -2,7 +2,6 @@
 
 Custom integration cho Home Assistant kết nối tới **Zalo Bot Server** để gửi/nhận thao tác Zalo trong automation, script và Developer Tools.
 
-> Phiên bản tài liệu này dành cho **Zalo Bot HACS v2026.8.18.2** và được rà soát trực tiếp với **zalo-bot-server-zcajs-2.1.2-reviewed** (server package 1.1.0, `zca-js` 2.1.2).
 
 ## Tính năng
 
