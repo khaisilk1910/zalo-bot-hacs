@@ -4,51 +4,204 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag cần build/release, ví dụ v2026.08.19.1655"
+        required: true
+        type: string
 
 permissions:
   contents: write
 
+concurrency:
+  group: hacs-release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   release:
+    name: Build and publish release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout tag
-        uses: actions/checkout@v4
-
-      - name: Validate manifest version
+      - name: Resolve release tag
+        id: release_tag
         shell: bash
+        env:
+          DISPATCH_TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
-          VERSION="${GITHUB_REF_NAME#v}"
-          MANIFEST="custom_components/zalo_bot/manifest.json"
-          MANIFEST_VERSION="$(python3 -c 'import json; print(json.load(open("custom_components/zalo_bot/manifest.json", encoding="utf-8"))["version"])')"
-          echo "Tag version:      ${VERSION}"
-          echo "Manifest version: ${MANIFEST_VERSION}"
-          test "${VERSION}" = "${MANIFEST_VERSION}" || {
-            echo "ERROR: tag and manifest.json version do not match"
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            TAG="${DISPATCH_TAG}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+
+          case "${TAG}" in
+            v*) ;;
+            *)
+              echo "ERROR: Tag phát hành phải bắt đầu bằng chữ v, ví dụ v2026.08.19.1655"
+              exit 1
+              ;;
+          esac
+
+          VERSION="${TAG#v}"
+          if [ -z "${VERSION}" ]; then
+            echo "ERROR: Không xác định được version từ tag ${TAG}"
             exit 1
-          }
+          fi
+
+          echo "tag=${TAG}" >> "${GITHUB_OUTPUT}"
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "Release tag: ${TAG}"
+          echo "Version:     ${VERSION}"
+
+      - name: Checkout release tag
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ steps.release_tag.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Stamp manifest and validate integration
+        shell: bash
+        env:
+          VERSION: ${{ steps.release_tag.outputs.version }}
+        run: |
+          set -euo pipefail
+          MANIFEST="custom_components/zalo_bot/manifest.json"
+
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("custom_components/zalo_bot/manifest.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          old_version = str(data.get("version", ""))
+          new_version = os.environ["VERSION"]
+          data["version"] = new_version
+          path.write_text(
+              json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          print(f"Manifest version: {old_version} -> {new_version}")
+          PY
+
+          python3 -m json.tool "${MANIFEST}" >/dev/null
           python3 -m compileall -q custom_components/zalo_bot
 
       - name: Build HACS zip asset
         shell: bash
         run: |
           set -euo pipefail
+          rm -f zalo_bot.zip
           cd custom_components/zalo_bot
-          zip -r "${GITHUB_WORKSPACE}/zalo_bot.zip" . \
-            -x "__pycache__/*" "*.pyc"
+          zip -qr "${GITHUB_WORKSPACE}/zalo_bot.zip" . \
+            -x "__pycache__/*" "*/__pycache__/*" "*.pyc" ".DS_Store"
 
-      - name: Validate zip layout
+      - name: Validate HACS zip
         shell: bash
+        env:
+          VERSION: ${{ steps.release_tag.outputs.version }}
         run: |
           set -euo pipefail
-          unzip -t zalo_bot.zip
+          unzip -tq zalo_bot.zip
           unzip -l zalo_bot.zip | grep -qE '[[:space:]]manifest\.json$'
           unzip -l zalo_bot.zip | grep -qE '[[:space:]]__init__\.py$'
 
+          ZIP_VERSION="$(unzip -p zalo_bot.zip manifest.json | python3 -c 'import json,sys; print(json.load(sys.stdin)["version"])')"
+          echo "ZIP manifest version: ${ZIP_VERSION}"
+          test "${ZIP_VERSION}" = "${VERSION}" || {
+            echo "ERROR: version trong zalo_bot.zip không khớp tag"
+            exit 1
+          }
+
       - name: Publish GitHub release with HACS asset
-        uses: softprops/action-gh-release@v2
+        id: publish_release
+        uses: softprops/action-gh-release@v3
         with:
+          tag_name: ${{ steps.release_tag.outputs.tag }}
           files: zalo_bot.zip
           generate_release_notes: true
           fail_on_unmatched_files: true
+          overwrite_files: true
+
+      # HACS đang dùng zip_release=true + filename=zalo_bot.zip, vì vậy release
+      # phía trên là nguồn cài đặt chính. Bước dưới chỉ đồng bộ version trên main;
+      # nếu branch protection chặn push thì release vẫn được giữ thành công.
+      - name: Checkout default branch for manifest sync
+        continue-on-error: true
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+          path: main-sync
+
+      - name: Sync manifest version to default branch
+        continue-on-error: true
+        shell: bash
+        working-directory: main-sync
+        env:
+          VERSION: ${{ steps.release_tag.outputs.version }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          MANIFEST="custom_components/zalo_bot/manifest.json"
+
+          SHOULD_UPDATE="$(python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("custom_components/zalo_bot/manifest.json")
+          current = str(json.loads(path.read_text(encoding="utf-8")).get("version", ""))
+          wanted = os.environ["VERSION"]
+
+          def numeric_key(value):
+              try:
+                  return tuple(int(part) for part in value.split("."))
+              except ValueError:
+                  return None
+
+          current_key = numeric_key(current)
+          wanted_key = numeric_key(wanted)
+
+          # Không hạ version của main khi chạy lại một release cũ.
+          if current == wanted:
+              print("no")
+          elif current_key is not None and wanted_key is not None and wanted_key < current_key:
+              print("no")
+          else:
+              print("yes")
+          PY
+          )"
+
+          if [ "${SHOULD_UPDATE}" != "yes" ]; then
+            echo "Không cần đồng bộ manifest trên ${DEFAULT_BRANCH}."
+            exit 0
+          fi
+
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("custom_components/zalo_bot/manifest.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          data["version"] = os.environ["VERSION"]
+          path.write_text(
+              json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${MANIFEST}"
+
+          if git diff --cached --quiet; then
+            echo "Manifest đã đúng version."
+            exit 0
+          fi
+
+          git commit -m "chore: sync manifest version to ${VERSION}"
+          git push origin "HEAD:${DEFAULT_BRANCH}"
