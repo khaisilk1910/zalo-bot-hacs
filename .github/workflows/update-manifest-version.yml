@@ -1,43 +1,52 @@
-name: Check Manifest Version
+name: Update Manifest Version on Release
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-  workflow_dispatch:
-
-permissions: {}
+  release:
+    types: [published]
 
 jobs:
-  check-version:
-    name: Validate integration metadata
+  update-version:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Cấp quyền cho Action được phép commit và push tag
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0 # Quan trọng: Lấy toàn bộ lịch sử để có quyền ghi đè Tag
 
-      - name: Validate HACS and Home Assistant manifests
-        shell: bash
+      - name: Lấy phiên bản từ Release Tag
+        id: get_version
         run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import json
-          import re
-          from pathlib import Path
+          # Lấy tên tag của release vừa tạo
+          VERSION="${{ github.event.release.tag_name }}"
+          # Xóa chữ 'v' ở đầu
+          VERSION=${VERSION#v}
+          echo "Bản phát hành mới là: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-          hacs_path = Path("hacs.json")
-          manifest_path = Path("custom_components/zalo_bot/manifest.json")
+      - name: Cập nhật file manifest.json
+        run: |
+          # Cập nhật đường dẫn tới file manifest.json
+          MANIFEST_PATH="custom_components/zalo_bot/manifest.json"
+          
+          # Dùng công cụ jq để sửa file JSON một cách an toàn
+          jq '.version = env.VERSION' $MANIFEST_PATH > tmp.json && mv tmp.json $MANIFEST_PATH
 
-          hacs = json.loads(hacs_path.read_text(encoding="utf-8"))
-          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+      - name: Commit và Push thay đổi
+        id: auto-commit
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: tự động cập nhật version thành ${{ env.VERSION }}"
+          file_pattern: '**/manifest.json'
 
-          assert hacs.get("name") == "Zalo Bot"
-          assert hacs.get("zip_release") is True
-          assert hacs.get("filename") == "zalo_bot.zip"
-          assert manifest.get("domain") == "zalo_bot"
-          assert manifest.get("name") == "Zalo Bot"
-          assert re.fullmatch(r"\d{4}\.\d{2}\.\d{2}\.\d{4}", manifest.get("version", "")), (
-              "manifest version must use YYYY.MM.DD.HHMM"
-          )
-          PY
+      - name: Ép Tag trỏ vào commit mới (Để HACS tải đúng code)
+        if: steps.auto-commit.outputs.changes_detected == 'true'
+        run: |
+          # Xóa tag cũ ở local và tạo lại tag trỏ vào commit mới nhất vừa sửa manifest
+          git tag -f ${{ github.event.release.tag_name }}
+          
+          # Đẩy tag mới này lên GitHub (ghi đè tag cũ)
+          git push -f origin ${{ github.event.release.tag_name }}
