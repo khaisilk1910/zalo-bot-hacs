@@ -1,0 +1,43 @@
+name: Check Manifest Version
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  check-version:
+    name: Validate integration metadata
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Validate HACS and Home Assistant manifests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          hacs_path = Path("hacs.json")
+          manifest_path = Path("custom_components/zalo_bot/manifest.json")
+
+          hacs = json.loads(hacs_path.read_text(encoding="utf-8"))
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+          assert hacs.get("name") == "Zalo Bot"
+          assert hacs.get("zip_release") is True
+          assert hacs.get("filename") == "zalo_bot.zip"
+          assert manifest.get("domain") == "zalo_bot"
+          assert manifest.get("name") == "Zalo Bot"
+          assert re.fullmatch(r"\d{4}\.\d{2}\.\d{2}\.\d{4}", manifest.get("version", "")), (
+              "manifest version must use YYYY.MM.DD.HHMM"
+          )
+          PY

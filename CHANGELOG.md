@@ -127,3 +127,11 @@
 - Temporary file bridge bind trực tiếp port 0 do OS cấp để loại race condition khi nhiều action gửi file/ảnh đồng thời; nhận diện loopback theo hostname chính xác.
 - Chuẩn hóa nhận diện loopback cho mọi action file/ảnh/avatar; không còn kiểm tra substring `localhost` có thể nhận nhầm hostname.
 - Yêu cầu/recommend Zalo Server v1.0.6 để nhận đầy đủ các bản vá reliability, security và webhook API.
+
+## 2026.08.19.0900
+
+- Sửa quy trình phát hành HACS: version trong `manifest.json` phải khớp chính xác với tag trước khi Release được tạo.
+- Bỏ cơ chế sửa `manifest.json` sau khi Release đã published và không còn force-move tag sau phát hành.
+- Chuyển sang HACS `zip_release` với asset cố định `zalo_bot.zip`.
+- Workflow release tự kiểm tra cấu trúc, compile Python, đóng ZIP với `manifest.json` ở root và upload asset vào GitHub Release.
+- Thêm kiểm tra metadata để phát hiện sớm version/tag hoặc cấu hình HACS sai.

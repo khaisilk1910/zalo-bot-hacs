@@ -688,3 +688,17 @@ Zalo Bot HACS:
 ```text
 https://github.com/khaisilk1910/zalo-bot-hacs
 ```
+
+## Phát hành bản cập nhật qua HACS
+
+Repository dùng GitHub Release asset `zalo_bot.zip`. HACS sẽ giải nén asset này trực tiếp vào `/config/custom_components/zalo_bot`, vì vậy `manifest.json` và `__init__.py` nằm ngay ở root của ZIP phát hành.
+
+### Cách khuyến nghị: chạy workflow thủ công
+
+Vào **GitHub → Actions → Build and Publish HACS Release → Run workflow**, nhập version không có chữ `v`, ví dụ `2026.08.19.0900`. Workflow sẽ tự cập nhật `manifest.json`, commit lên `main`, tạo tag `v2026.08.19.0900`, kiểm tra cấu trúc/compile, tạo `zalo_bot.zip` và tạo GitHub Release.
+
+### Nếu tự tạo tag bằng Git
+
+Trước khi tạo tag, bắt buộc `custom_components/zalo_bot/manifest.json` đã có version trùng với tag (bỏ chữ `v`). Ví dụ tag `v2026.08.19.0900` phải đi cùng `"version": "2026.08.19.0900"`. Workflow sẽ dừng và không publish release nếu hai giá trị lệch nhau.
+
+Không sửa hoặc force-move một tag sau khi Release đã được publish. Khi cần sửa, hãy tạo một version/tag mới.
