@@ -1,0 +1,54 @@
+name: Build and publish HACS release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v4
+
+      - name: Validate manifest version
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          MANIFEST="custom_components/zalo_bot/manifest.json"
+          MANIFEST_VERSION="$(python3 -c 'import json; print(json.load(open("custom_components/zalo_bot/manifest.json", encoding="utf-8"))["version"])')"
+          echo "Tag version:      ${VERSION}"
+          echo "Manifest version: ${MANIFEST_VERSION}"
+          test "${VERSION}" = "${MANIFEST_VERSION}" || {
+            echo "ERROR: tag and manifest.json version do not match"
+            exit 1
+          }
+          python3 -m compileall -q custom_components/zalo_bot
+
+      - name: Build HACS zip asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd custom_components/zalo_bot
+          zip -r "${GITHUB_WORKSPACE}/zalo_bot.zip" . \
+            -x "__pycache__/*" "*.pyc"
+
+      - name: Validate zip layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          unzip -t zalo_bot.zip
+          unzip -l zalo_bot.zip | grep -qE '[[:space:]]manifest\.json$'
+          unzip -l zalo_bot.zip | grep -qE '[[:space:]]__init__\.py$'
+
+      - name: Publish GitHub release with HACS asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: zalo_bot.zip
+          generate_release_notes: true
+          fail_on_unmatched_files: true
