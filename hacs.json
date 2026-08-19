@@ -1,7 +1,5 @@
 {
   "name": "Zalo Bot",
   "country": "VN",
-  "homeassistant": "2024.4.1",
-  "zip_release": true,
-  "filename": "zalo_bot.zip"
+  "homeassistant": "2024.4.1"
 }
