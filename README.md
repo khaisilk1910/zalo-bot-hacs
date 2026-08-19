@@ -148,6 +148,10 @@ zalo_bot.get_login_qr
 - `forward_message`
 - `parse_link`
 
+### Lưu ý khi gửi video
+
+Với Zalo Bot Server `1.2.2+`, video local của Home Assistant được phục vụ tạm thời chỉ để server tải nguồn; server sau đó re-upload video lên Zalo và gửi bằng URL do Zalo cấp. Cách này tránh lỗi video biến mất khi URL local hết hạn. Nên truyền `thumbnail_url` là ảnh JPG/PNG local hoặc URL ảnh truy cập được từ Zalo Bot Server.
+
 ### Account
 
 - `get_logged_accounts`

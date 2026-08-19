@@ -254,7 +254,7 @@ async def async_send_video_service(hass, call, zalo_login):
             try:
                 _LOGGER.debug(f"Sử dụng máy chủ HTTP tạm thời để phục vụ tệp video: {video_path}")
                 public_url = await hass.async_add_executor_job(
-                    serve_file_temporarily, video_path, 90
+                    serve_file_temporarily, video_path, 300
                 )
             except Exception as e:
                 error_msg = f"Lỗi khi xử lý tệp video: {str(e)}"
@@ -271,7 +271,7 @@ async def async_send_video_service(hass, call, zalo_login):
             if await _async_is_file(hass, thumbnail_url):
                 try:
                     thumbnail_url = await hass.async_add_executor_job(
-                        serve_file_temporarily, thumbnail_url, 90
+                        serve_file_temporarily, thumbnail_url, 300
                     )
                 except Exception as e:
                     _LOGGER.warning("Không thể xử lý thumbnail file local: %s, dùng URL video làm thumbnail", e)
@@ -312,8 +312,11 @@ async def async_send_video_service(hass, call, zalo_login):
         _LOGGER.debug("Gửi payload đến sendVideoByAccount: %s", payload)
         url = f"{zalo_server}/api/sendVideoByAccount"
         _LOGGER.debug("URL đầy đủ: %s", url)
+        # Video now goes through download -> Zalo upload -> sendVideo on the backend.
+        # Allow enough time for that durable upload while keeping the blocking
+        # requests call off Home Assistant's event loop.
         resp = await hass.async_add_executor_job(
-            lambda: session.post(url, json=payload)
+            lambda: session.post(url, json=payload, timeout=240)
         )
         _LOGGER.debug("Response status: %s", resp.status_code)
         _LOGGER.debug("Response headers: %s", dict(resp.headers))

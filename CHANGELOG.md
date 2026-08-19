@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.8.19.1
+
+### Video reliability
+- Tăng thời gian phục vụ HTTP tạm cho video/thumbnail local từ 90 giây lên 300 giây để Zalo Bot Server có đủ thời gian tải nguồn và re-upload lên Zalo trước khi URL local hết hạn.
+- `send_video` vẫn chạy mọi thao tác file blocking và HTTP blocking qua `hass.async_add_executor_job`, không chặn Home Assistant event loop; riêng request video có timeout 240 giây để đủ cho chuỗi download → upload Zalo → send.
+- Không thêm network/filesystem I/O vào `async_setup_entry`; cơ chế startup không đổi.
+- Tương thích với Zalo Bot Server `1.2.2`, nơi video được upload bền vững lên Zalo trước khi gọi `sendVideo`.
+
 ## 2026.8.18.3
 
 ### Zalo ID precision / webhook safety

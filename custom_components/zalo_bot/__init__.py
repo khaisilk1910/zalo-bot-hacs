@@ -363,7 +363,7 @@ def get_device_info() -> DeviceInfo:
         name="Zalo Bot",
         manufacturer="Smarthome Black",
         model="Zalo Bot",
-        sw_version="2026.8.18.3",
+        sw_version="2026.8.19.1",
     )
 
 
