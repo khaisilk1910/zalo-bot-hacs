@@ -477,7 +477,7 @@ SERVICE_GET_STICKERS_DETAIL_SCHEMA = vol.Schema({
 SERVICE_SEND_VIDEO_SCHEMA = vol.Schema({
     vol.Required("thread_id"): ZALO_ID_SCHEMA,
     vol.Required("video_path_or_url"): cv.string,
-    vol.Optional("thumbnail_url", default=""): cv.string,
+    vol.Optional("thumbnail_url"): cv.string,
     vol.Optional("message", default=""): cv.string,
     vol.Optional("width", default=1280): cv.positive_int,
     vol.Optional("height", default=720): cv.positive_int,

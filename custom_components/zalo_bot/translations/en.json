@@ -1345,7 +1345,7 @@
         },
         "thumbnail_url": {
           "name": "Thumbnail Url",
-          "description": "Value for thumbnail url."
+          "description": "Optional thumbnail URL/path. If omitted, Zalo Bot Server extracts a frame from the video automatically."
         },
         "message": {
           "name": "Message",

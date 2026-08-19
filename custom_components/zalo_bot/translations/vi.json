@@ -1345,7 +1345,7 @@
         },
         "thumbnail_url": {
           "name": "URL ảnh đại diện video",
-          "description": "URL thumbnail của video hoặc đường dẫn file local (nếu không có sẽ dùng video làm thumbnail)"
+          "description": "Tùy chọn. URL/đường dẫn thumbnail; nếu bỏ trống, Zalo Bot Server tự lấy một frame từ video làm thumbnail."
         },
         "message": {
           "name": "Nội dung tin nhắn",

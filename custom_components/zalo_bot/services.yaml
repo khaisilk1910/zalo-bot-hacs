@@ -2151,7 +2151,7 @@ send_video:
       selector:
         text: null
     thumbnail_url:
-      description: URL thumbnail của video hoặc đường dẫn file local. Nên dùng ảnh JPG/PNG để preview ổn định.
+      description: Tùy chọn. URL/đường dẫn thumbnail JPG/PNG; nếu bỏ trống, Zalo Bot Server tự lấy một frame từ video làm thumbnail.
       example: https://example.com/thumbnail.jpg hoặc /config/www/thumb.jpg
       required: false
       selector:

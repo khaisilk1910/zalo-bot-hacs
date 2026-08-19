@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.08.19.1648
+
+### Video thumbnail tự động
+- `send_video` không còn dùng URL video làm thumbnail khi `thumbnail_url` bị bỏ trống.
+- `thumbnail_url` trở thành tùy chọn thực sự; khi không nhập, integration bỏ hẳn field `thumbnailUrl` khỏi payload để Zalo Bot Server `1.2.3+` tự trích một frame JPEG từ video.
+- Nếu thumbnail local được khai báo nhưng không tồn tại/không thể phục vụ, action tự chuyển sang cơ chế thumbnail tự động của server thay vì gửi URL video giả làm thumbnail.
+- Không thêm ffmpeg hay xử lý ảnh vào Home Assistant; I/O file/HTTP hiện có vẫn chạy qua executor và startup integration không thay đổi.
+
 ## 2026.8.19.1
 
 ### Video reliability

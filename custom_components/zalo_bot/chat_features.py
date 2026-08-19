@@ -265,20 +265,22 @@ async def async_send_video_service(hass, call, zalo_login):
             error_msg = "Không thể tạo URL công khai cho video."
             await show_result_notification(hass, "gửi video", None, error=error_msg)
             return {"error": error_msg}
-        thumbnail_url = call.data.get("thumbnail_url", public_url)
+        # thumbnail_url is truly optional. When omitted/blank, do not send a
+        # placeholder video URL as thumbnail; the server will extract a JPEG frame
+        # from the downloaded video and upload it to Zalo automatically.
+        thumbnail_url = str(call.data.get("thumbnail_url") or "").strip()
         if thumbnail_url and not (thumbnail_url.startswith("http://") or thumbnail_url.startswith("https://")):
-
             if await _async_is_file(hass, thumbnail_url):
                 try:
                     thumbnail_url = await hass.async_add_executor_job(
                         serve_file_temporarily, thumbnail_url, 300
                     )
                 except Exception as e:
-                    _LOGGER.warning("Không thể xử lý thumbnail file local: %s, dùng URL video làm thumbnail", e)
-                    thumbnail_url = public_url
+                    _LOGGER.warning("Không thể xử lý thumbnail file local %s: %s. Server sẽ tự lấy frame từ video.", thumbnail_url, e)
+                    thumbnail_url = ""
             else:
-                _LOGGER.warning("Không tìm thấy thumbnail file: %s, dùng URL video làm thumbnail", thumbnail_url)
-                thumbnail_url = public_url
+                _LOGGER.warning("Không tìm thấy thumbnail file %s. Server sẽ tự lấy frame từ video.", thumbnail_url)
+                thumbnail_url = ""
 
         if video_path.startswith("http://") or video_path.startswith("https://"):
             duration = 10000
@@ -291,12 +293,13 @@ async def async_send_video_service(hass, call, zalo_login):
                 duration = 10000
         options = {
             "videoUrl": public_url,
-            "thumbnailUrl": thumbnail_url,
             "msg": call.data.get("message", ""),
             "duration": int(duration),
             "width": int(call.data.get("width", 1280)),
             "height": int(call.data.get("height", 720)),
         }
+        if thumbnail_url:
+            options["thumbnailUrl"] = thumbnail_url
         if "ttl" in call.data:
             options["ttl"] = call.data["ttl"]
         thread_type_num = normalize_thread_type(msg_type)
